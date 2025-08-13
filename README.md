@@ -25,8 +25,8 @@
 ### 1. 프로젝트 클론 및 설치
 
 ```bash
-git clone <repository-url>
-cd dino-simple
+git clone https://github.com/taco0513/DINO-simple.git
+cd DINO-simple
 npm install
 ```
 
