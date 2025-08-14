@@ -92,11 +92,17 @@ export default function ProfilePage() {
       setSaving(true)
       setMessage(null)
 
-      const { data: existingProfile } = await supabase
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('profiles')
         .select('id')
         .eq('user_id', user.id)
         .single()
+      
+      // PGRST116 means no rows found, which is fine for new profiles
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error('Error fetching existing profile:', fetchError)
+        throw fetchError
+      }
 
       // First try with only basic passport fields that exist in original schema
       const basicProfileData: any = {}
@@ -118,55 +124,86 @@ export default function ProfilePage() {
       let profileData = fullProfileData
 
       console.log('Saving profile data:', profileData)
+      console.log('Basic profile data:', basicProfileData)
       console.log('Existing profile?', !!existingProfile)
+      console.log('User ID:', user.id)
 
       let error
+      let data
+      
       if (existingProfile) {
-        const { error: updateError } = await supabase
+        console.log('Updating existing profile...')
+        const { error: updateError, data: updateData } = await supabase
           .from('profiles')
           .update(profileData)
           .eq('user_id', user.id)
+          .select()
+        
         error = updateError
+        data = updateData
+        console.log('Update result:', { error: updateError, data: updateData })
         
         // If full update fails, try with basic fields only
         if (error && error.message?.includes('column')) {
           console.log('Full update failed, trying basic fields only')
-          const { error: basicError } = await supabase
+          const { error: basicError, data: basicData } = await supabase
             .from('profiles')
             .update(basicProfileData)
             .eq('user_id', user.id)
+            .select()
           error = basicError
+          data = basicData
+          console.log('Basic update result:', { error: basicError, data: basicData })
         }
       } else {
-        const { error: insertError } = await supabase
+        console.log('Creating new profile...')
+        const { error: insertError, data: insertData } = await supabase
           .from('profiles')
           .insert({
             user_id: user.id,
             ...profileData
           })
+          .select()
+        
         error = insertError
+        data = insertData
+        console.log('Insert result:', { error: insertError, data: insertData })
         
         // If full insert fails, try with basic fields only
         if (error && error.message?.includes('column')) {
           console.log('Full insert failed, trying basic fields only')
-          const { error: basicError } = await supabase
+          const { error: basicError, data: basicData } = await supabase
             .from('profiles')
             .insert({
               user_id: user.id,
               ...basicProfileData
             })
+            .select()
           error = basicError
+          data = basicData
+          console.log('Basic insert result:', { error: basicError, data: basicData })
         }
       }
 
       if (error) {
-        console.error('Supabase error details:', error)
+        console.error('Supabase error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
         throw error
       }
 
       setMessage({ type: 'success', text: 'Profile saved successfully!' })
     } catch (error: any) {
-      console.error('Error saving profile:', error)
+      console.error('Error saving profile:', {
+        message: error?.message,
+        details: error?.details,
+        hint: error?.hint,
+        code: error?.code,
+        fullError: error
+      })
       const errorMessage = error?.message || error?.details || 'Failed to save profile. Please try again.'
       setMessage({ type: 'error', text: errorMessage })
     } finally {
