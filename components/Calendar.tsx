@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useStore } from '@/lib/store'
+import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
 import {
   format,
@@ -27,7 +27,7 @@ interface CalendarProps {
 }
 
 export default function Calendar({ currentDate, onDateChange, selectedCountries }: CalendarProps) {
-  const { stays, loadStays } = useStore()
+  const { stays, loadStays } = useSupabaseStore()
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [showKoreaWindow, setShowKoreaWindow] = useState(false)
 

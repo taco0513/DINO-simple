@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useStore } from '@/lib/store'
+import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
 
 interface CountryFilterProps {
@@ -10,7 +10,7 @@ interface CountryFilterProps {
 }
 
 export default function CountryFilter({ selectedCountries, onSelectionChange }: CountryFilterProps) {
-  const stays = useStore((state) => state.stays)
+  const stays = useSupabaseStore((state) => state.stays)
   const [visitedCountries, setVisitedCountries] = useState<string[]>([])
 
   useEffect(() => {

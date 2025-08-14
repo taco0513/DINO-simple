@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Calendar from '@/components/Calendar'
 import YearCalendar from '@/components/YearCalendar'
 import CountryFilter from '@/components/CountryFilter'
-import { useStore } from '@/lib/store'
+import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
 
 type CalendarView = 'month' | 'year'
@@ -12,7 +12,11 @@ type CalendarView = 'month' | 'year'
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedCountries, setSelectedCountries] = useState<string[]>([])
-  const { stays } = useStore()
+  const { stays, loadStays } = useSupabaseStore()
+
+  useEffect(() => {
+    loadStays()
+  }, [loadStays])
   
   // Check if there are any Korea stays with 183/365 visa
   const hasKoreaSpecialVisa = stays.some(s => s.countryCode === 'KR' && s.visaType === '183/365')

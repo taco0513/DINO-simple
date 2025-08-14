@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useStore } from '@/lib/store'
+import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
 import {
   format,
@@ -30,7 +30,7 @@ interface YearCalendarProps {
 }
 
 export default function YearCalendar({ currentDate, onDateChange, selectedCountries }: YearCalendarProps) {
-  const { stays, loadStays } = useStore()
+  const { stays, loadStays } = useSupabaseStore()
   const [showKoreaWindow, setShowKoreaWindow] = useState(false)
   
 
