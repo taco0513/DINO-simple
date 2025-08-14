@@ -264,16 +264,32 @@ export default function ProfilePage() {
   const getStats = () => {
     const countriesVisited = [...new Set(stays.map(s => s.countryCode))].length
     const currentYear = new Date().getFullYear()
+    const yearStart = new Date(currentYear, 0, 1) // January 1st of current year
+    const today = new Date()
+    
     const daysThisYear = stays
       .filter(stay => {
-        const year = new Date(stay.entryDate).getFullYear()
-        return year === currentYear
+        // Include any stay that overlaps with the current year
+        const entryDate = new Date(stay.entryDate)
+        const exitDate = stay.exitDate ? new Date(stay.exitDate) : today
+        
+        // Check if the stay overlaps with the current year (from Jan 1 to today)
+        return exitDate >= yearStart && entryDate <= today
       })
       .reduce((total, stay) => {
-        const entry = new Date(stay.entryDate)
-        const exit = stay.exitDate ? new Date(stay.exitDate) : new Date()
-        const days = Math.ceil((exit.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24)) + 1
-        return total + days
+        const entryDate = new Date(stay.entryDate)
+        const exitDate = stay.exitDate ? new Date(stay.exitDate) : today
+        
+        // Calculate the overlap with the current year
+        const effectiveStart = entryDate > yearStart ? entryDate : yearStart
+        const effectiveEnd = exitDate < today ? exitDate : today
+        
+        // Only count if there's a valid overlap
+        if (effectiveEnd >= effectiveStart) {
+          const days = Math.ceil((effectiveEnd.getTime() - effectiveStart.getTime()) / (1000 * 60 * 60 * 24)) + 1
+          return total + days
+        }
+        return total
       }, 0)
 
     const mostVisited = stays.reduce((acc, stay) => {
