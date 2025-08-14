@@ -115,6 +115,28 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 4. **Vercel Deployment Issues**: Build cache causing module resolution errors
    - Solution: Delete and recreate project, ensure baseUrl in tsconfig.json
 
+### Beta Launch Features (2025.08.14)
+1. **Feedback System**: Comprehensive beta user feedback collection
+   - Screenshot upload support (up to 5MB)
+   - 4 feedback types: General, Bug, Feature, UI/UX
+   - Email delivery to hello@zimojin.com via Resend API
+   - 10-character minimum validation with real-time counter
+   - Supabase storage integration for screenshots
+
+2. **Security Enhancements**: Production-ready security measures
+   - Row Level Security (RLS) policies on all tables
+   - Rate limiting on API endpoints (10 requests per minute)
+   - Input validation and sanitization
+   - SQL injection prevention
+   - CORS and security headers configuration
+   - Audit logging for all data modifications
+
+3. **Performance Optimizations**:
+   - Removed debug console logs from visa calculator
+   - Optimized build output (140KB First Load JS)
+   - Clean development experience
+   - Zero security vulnerabilities (npm audit)
+
 ## Testing Specific Features
 
 ```bash
@@ -130,12 +152,24 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 # Test profile
 # All tabs should save independently except Security and Stats
 # Password change uses Supabase Auth API
+
+# Test feedback system
+# Access via dashboard hamburger menu → "Send Feedback"
+# Try different feedback types: General, Bug, Feature, UI/UX
+# Upload screenshot (PNG, JPG up to 5MB)
+# Minimum 10 characters required for message
+# Email sent to hello@zimojin.com with screenshot attachment
 ```
 
 ## Critical Files for Context
 
 - `lib/visa-calculator.ts`: Core visa calculation logic
 - `lib/supabase-store.ts`: State management and Supabase sync
-- `lib/visa-rules.ts`: Visa rules configuration
+- `lib/visa-rules.ts`: Visa rules configuration with source links
 - `app/dashboard/page.tsx`: Main dashboard with visa cards
 - `components/VisaCard.tsx`: Visual representation of visa status
+- `components/FeedbackModal.tsx`: Beta feedback system with screenshot support
+- `app/api/feedback/route.ts`: Server-side feedback processing and email delivery
+- `lib/security.ts`: Security utilities (input validation, sanitization)
+- `lib/rate-limiter.ts`: API rate limiting implementation
+- `supabase/migrations/`: Database security policies and table structures
