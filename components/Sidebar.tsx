@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
   { name: 'Calendar', href: '/dashboard/calendar', icon: '📅' },
+  { name: 'Profile', href: '/dashboard/profile', icon: '👤' },
+  { name: 'CSV File', href: '/dashboard/csv', icon: '📁' },
 ]
 
 export default function Sidebar() {

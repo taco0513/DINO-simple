@@ -45,16 +45,16 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">체류 기록 수정</h2>
+        <h2 className="text-xl font-semibold mb-4">Edit Stay Record</h2>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* From Location */}
           <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">From (출발지)</h3>
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">From (Departure)</h3>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Country/나라
+                  Country
                 </label>
                 <CountrySelect
                   value={formData.fromCountryCode}
@@ -64,7 +64,7 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  City/도시 (or Airport Code)
+                  City (or Airport Code)
                 </label>
                 <input
                   type="text"
@@ -79,11 +79,11 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
 
           {/* To Location */}
           <div className="border border-gray-200 rounded-lg p-4 bg-blue-50">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">To (도착지)</h3>
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">To (Arrival)</h3>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Country/나라 *
+                  Country *
                 </label>
                 <CountrySelect
                   value={formData.countryCode}
@@ -93,7 +93,7 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  City/도시 (or Airport Code)
+                  City (or Airport Code)
                 </label>
                 <input
                   type="text"
@@ -109,7 +109,7 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                입국일
+                Entry Date
               </label>
               <input
                 type="date"
@@ -122,7 +122,7 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                출국일
+                Exit Date
               </label>
               <input
                 type="date"
@@ -135,26 +135,26 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              비자 타입
+              Visa Type
             </label>
             <select
               value={formData.visaType}
               onChange={(e) => setFormData({ ...formData, visaType: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="visa-free">무비자</option>
-              <option value="tourist">관광비자</option>
-              <option value="business">비즈니스비자</option>
-              <option value="e-visa">전자비자</option>
+              <option value="visa-free">Visa Free</option>
+              <option value="tourist">Tourist Visa</option>
+              <option value="business">Business Visa</option>
+              <option value="e-visa">E-Visa</option>
               {formData.countryCode === 'KR' && (
-                <option value="183/365">183/365 (특별 거주)</option>
+                <option value="183/365">183/365 (Special Resident)</option>
               )}
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              메모 (선택)
+              Notes (Optional)
             </label>
             <textarea
               value={formData.notes}
@@ -170,13 +170,13 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
               onClick={onClose}
               className="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
             >
-              취소
+              Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-              저장
+              Save
             </button>
           </div>
         </form>

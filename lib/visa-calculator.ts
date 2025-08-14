@@ -1,12 +1,14 @@
 import { Stay, VisaStatus, Country } from './types'
 import { visaRules } from './visa-rules'
-import { differenceInDays, subDays, parseISO } from 'date-fns'
+import { differenceInDays, subDays, parseISO, format, startOfDay } from 'date-fns'
 
 export function calculateVisaStatus(
   stays: Stay[],
   country: Country,
   referenceDate: Date = new Date()
 ): VisaStatus {
+  // Ensure reference date is normalized to start of day
+  referenceDate = startOfDay(referenceDate)
   let daysUsed = 0
   const countryStays = stays.filter(s => s.countryCode === country.code)
   
@@ -44,8 +46,8 @@ export function calculateVisaStatus(
         // Process stays from oldest to newest
         for (let i = sortedStays.length - 1; i >= 0; i--) {
           const stay = sortedStays[i]
-          const entryDate = parseISO(stay.entryDate)
-          const exitDate = stay.exitDate ? parseISO(stay.exitDate) : referenceDate
+          const entryDate = startOfDay(parseISO(stay.entryDate))
+          const exitDate = stay.exitDate ? startOfDay(parseISO(stay.exitDate)) : referenceDate
           
           // If this is the first stay we're checking (most recent) or
           // if there's no significant gap (< 7 days) between this stay and the previous one
@@ -66,21 +68,53 @@ export function calculateVisaStatus(
     case 'rolling':
       // Count days within the rolling window
       if (rule.periodDays) {
-        const periodStart = subDays(referenceDate, rule.periodDays - 1)
+        // Use startOfDay to ensure consistent date handling
+        // For 365-day period: today minus 365 days (not 364)
+        const periodStart = startOfDay(subDays(referenceDate, rule.periodDays))
+        
+        // Debug logging for Korea
+        if (country.code === 'KR' && hasSpecialKoreaVisa) {
+          console.log('=== Korea 183/365 Calculation ===')
+          console.log('Today (reference date):', format(referenceDate, 'yyyy-MM-dd'))
+          console.log('Period start (365 days ago):', format(periodStart, 'yyyy-MM-dd'))
+          console.log('Period: 365 days')
+          console.log('Max days allowed in period:', rule.maxDays)
+        }
         
         countryStays.forEach(stay => {
-          const entryDate = parseISO(stay.entryDate)
-          const exitDate = stay.exitDate ? parseISO(stay.exitDate) : referenceDate
+          // Parse dates and normalize to start of day to avoid timezone issues
+          const entryDate = startOfDay(parseISO(stay.entryDate))
+          const exitDate = stay.exitDate ? startOfDay(parseISO(stay.exitDate)) : referenceDate
           
           // Calculate overlap with the rolling window
           const overlapStart = entryDate < periodStart ? periodStart : entryDate
           const overlapEnd = exitDate > referenceDate ? referenceDate : exitDate
           
           if (overlapStart <= overlapEnd) {
-            const overlap = differenceInDays(overlapEnd, overlapStart) + 1
+            const diffDays = differenceInDays(overlapEnd, overlapStart)
+            const overlap = diffDays + 1
+            
+            // Debug logging for Korea
+            if (country.code === 'KR' && hasSpecialKoreaVisa) {
+              console.log(`Stay: ${stay.entryDate} to ${stay.exitDate || 'present (ongoing)'}`)
+              console.log(`  Entry: ${format(entryDate, 'yyyy-MM-dd')}`)
+              console.log(`  Exit: ${format(exitDate, 'yyyy-MM-dd')} ${!stay.exitDate ? '(today)' : ''}`)
+              console.log(`  Overlap period: ${format(overlapStart, 'yyyy-MM-dd')} to ${format(overlapEnd, 'yyyy-MM-dd')}`)
+              console.log(`  Difference in days: ${diffDays}`)
+              console.log(`  Days counted (inclusive +1): ${overlap}`)
+              console.log(`  Is ongoing stay: ${!stay.exitDate}`)
+            }
+            
             daysUsed += overlap
           }
         })
+        
+        if (country.code === 'KR' && hasSpecialKoreaVisa) {
+          console.log('Total days used:', daysUsed)
+          console.log('Max days allowed:', rule.maxDays)
+          console.log('Remaining days:', rule.maxDays - daysUsed)
+          console.log('=================================')
+        }
       }
       break
   }

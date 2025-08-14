@@ -1,14 +1,19 @@
 import { VisaStatus, Stay } from '@/lib/types'
-import { useStore } from '@/lib/store'
+import { useSupabaseStore } from '@/lib/supabase-store'
+import { visaRules } from '@/lib/visa-rules'
+import { useState } from 'react'
 
 interface VisaCardProps {
   status: VisaStatus
 }
 
 export default function VisaCard({ status }: VisaCardProps) {
-  const stays = useStore((state) => state.stays)
+  const stays = useSupabaseStore((state) => state.stays)
+  const [showInfo, setShowInfo] = useState(false)
   const hasSpecialKoreaVisa = status.country.code === 'KR' && 
     stays.filter(s => s.countryCode === 'KR').some(s => s.visaType === '183/365')
+  
+  const visaRule = visaRules[status.country.code]
   
   const getStatusColor = () => {
     switch (status.status) {
@@ -19,11 +24,15 @@ export default function VisaCard({ status }: VisaCardProps) {
   }
 
   const getBorderColor = () => {
-    switch (status.status) {
-      case 'danger': return 'border-red-500 border-2'
-      case 'warning': return 'border-yellow-500 border-2'
-      default: return 'border-gray-200'
+    // Use standard thresholds for all countries including Korea
+    if (status.remainingDays <= 14) {
+      return 'border-red-500 border-2'
+    } else if (status.remainingDays <= 30) {
+      return 'border-yellow-500 border-2'
     }
+    
+    // Default border
+    return 'border-gray-200'
   }
 
   return (
@@ -54,10 +63,41 @@ export default function VisaCard({ status }: VisaCardProps) {
 
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Remaining</span>
-          <span className={`font-medium ${status.remainingDays <= 7 ? 'text-red-600' : ''}`}>
+          <span className={`font-medium ${
+            status.remainingDays <= 14 ? 'text-red-600' : 
+            status.remainingDays <= 30 ? 'text-yellow-600' : 
+            ''
+          }`}>
             {status.remainingDays} days
+            {status.remainingDays <= 14 && ' ⚠️'}
           </span>
         </div>
+
+        {/* Reset Info Button */}
+        {visaRule?.resetInfo && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="text-xs text-blue-600 hover:text-blue-700 flex items-center"
+            >
+              <svg 
+                className={`w-3 h-3 mr-1 transition-transform ${showInfo ? 'rotate-90' : ''}`} 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              {visaRule.ruleType === 'rolling' ? 'How it works' : 'Reset info'}
+            </button>
+            
+            {showInfo && (
+              <div className="mt-2 p-2 bg-blue-50 rounded text-xs text-gray-700">
+                {visaRule.resetInfo}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

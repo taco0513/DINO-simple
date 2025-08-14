@@ -14,20 +14,21 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/components/AuthProvider'
 
 export default function DashboardPage() {
-  const { stays, loadStays, migrateFromLocalStorage, loading } = useSupabaseStore()
+  const { stays, loadStays, migrateFromLocalStorage, loading, initialLoad } = useSupabaseStore()
   const [showAddModal, setShowAddModal] = useState(false)
   const { user, signOut } = useAuth()
 
   useEffect(() => {
     if (user) {
-      // First migrate from localStorage if needed, then load stays
-      migrateFromLocalStorage().then(() => {
+      // Run migration and loading in parallel for faster startup
+      Promise.all([
+        migrateFromLocalStorage(),
         loadStays()
-      })
+      ])
     }
   }, [user, loadStays, migrateFromLocalStorage])
 
-  // 오버랩 감지
+  // Detect overlaps
   const hasOverlaps = () => {
     const sortedStays = [...stays].sort((a, b) => 
       new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime()
@@ -48,7 +49,7 @@ export default function DashboardPage() {
     return false
   }
 
-  // 오버랩 해결
+  // Resolve overlaps
   const handleResolveOverlaps = async () => {
     const resolvedStays = resolveAllOverlaps(stays)
     
@@ -93,7 +94,7 @@ export default function DashboardPage() {
                     onClick={signOut}
                     className="text-xs text-gray-400 hover:text-gray-600 underline"
                   >
-                    로그아웃
+                    Sign out
                   </button>
                 </div>
               )}
@@ -107,13 +108,13 @@ export default function DashboardPage() {
             <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            체류 기록 추가
+            Add Stay Record
           </button>
         </div>
       </div>
 
-      {loading ? (
-        // Loading skeleton
+      {loading || !initialLoad ? (
+        // Loading skeleton - show this while loading OR if initial load hasn't completed
         <div className="space-y-8">
           <section>
             <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Overview</h2>
@@ -144,12 +145,12 @@ export default function DashboardPage() {
         </div>
       ) : visaStatuses.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
-          <p className="text-gray-500 mb-4">아직 여행 기록이 없습니다</p>
+          <p className="text-gray-500 mb-4">No travel records yet</p>
           <button
             onClick={() => setShowAddModal(true)}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
           >
-            첫 체류 기록 추가하기
+            Add your first stay
           </button>
         </div>
       ) : (
@@ -163,9 +164,9 @@ export default function DashboardPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.498 0L4.316 15.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                   <div>
-                    <h3 className="text-sm font-medium text-yellow-800">날짜 오버랩 감지</h3>
+                    <h3 className="text-sm font-medium text-yellow-800">Date Overlap Detected</h3>
                     <p className="text-sm text-yellow-700 mt-1">
-                      여러 나라에 동시에 체류하는 기록이 있습니다. 자동으로 해결하시겠습니까?
+                      You have records showing stays in multiple countries simultaneously. Would you like to automatically resolve this?
                     </p>
                   </div>
                 </div>
@@ -173,7 +174,7 @@ export default function DashboardPage() {
                   onClick={handleResolveOverlaps}
                   className="px-3 py-1.5 text-sm bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
                 >
-                  오버랩 해결
+                  Resolve Overlaps
                 </button>
               </div>
             </div>

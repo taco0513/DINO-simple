@@ -24,6 +24,7 @@ export interface VisaRule {
   maxDays: number
   periodDays?: number
   ruleType: 'reset' | 'rolling' | 'annual'
+  resetInfo?: string // Information about how the visa resets
 }
 
 export interface VisaStatus {

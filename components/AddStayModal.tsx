@@ -49,11 +49,11 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* From Location */}
           <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">From (출발지)</h3>
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">From (Departure)</h3>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Country/나라
+                  Country
                 </label>
                 <CountrySelect
                   value={formData.fromCountryCode}
@@ -63,7 +63,7 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  City/도시 (or Airport Code)
+                  City (or Airport Code)
                 </label>
                 <input
                   type="text"
@@ -78,11 +78,11 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
 
           {/* To Location */}
           <div className="border border-gray-200 rounded-lg p-4 bg-blue-50">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3">To (도착지)</h3>
+            <h3 className="text-sm font-semibold text-gray-800 mb-3">To (Arrival)</h3>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Country/나라 *
+                  Country *
                 </label>
                 <CountrySelect
                   value={formData.countryCode}
@@ -92,7 +92,7 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  City/도시 (or Airport Code)
+                  City (or Airport Code)
                 </label>
                 <input
                   type="text"

@@ -7,17 +7,10 @@ import { countries } from '@/lib/countries'
 export default function StatsCards() {
   const { stays } = useSupabaseStore()
   
-  // 총 여행일수 계산
-  const totalTravelDays = stays.reduce((total, stay) => {
-    const entryDate = parseISO(stay.entryDate)
-    const exitDate = stay.exitDate ? parseISO(stay.exitDate) : new Date()
-    return total + differenceInDays(exitDate, entryDate) + 1
-  }, 0)
-  
-  // 방문한 국가 수
+  // Number of countries visited
   const visitedCountries = [...new Set(stays.map(s => s.countryCode))].length
   
-  // 올해 여행일수 계산
+  // Calculate days traveled this year
   const currentYear = new Date().getFullYear()
   const yearStart = startOfYear(new Date())
   const yearEnd = endOfYear(new Date())
@@ -26,7 +19,7 @@ export default function StatsCards() {
     const entryDate = parseISO(stay.entryDate)
     const exitDate = stay.exitDate ? parseISO(stay.exitDate) : new Date()
     
-    // 올해에 겹치는 기간만 계산
+    // Calculate only the overlapping period in this year
     const overlapStart = entryDate < yearStart ? yearStart : entryDate
     const overlapEnd = exitDate > yearEnd ? yearEnd : exitDate
     
@@ -36,7 +29,7 @@ export default function StatsCards() {
     return total
   }, 0)
   
-  // 현재 체류 중인 국가
+  // Currently staying in country
   const currentStay = stays.find(s => !s.exitDate)
   const currentCountry = currentStay 
     ? countries.find(c => c.code === currentStay.countryCode)
@@ -46,54 +39,43 @@ export default function StatsCards() {
     : 0
   
   return (
-    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-      {/* 총 여행일수 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs md:text-sm text-gray-600">총 여행일수</p>
-            <p className="text-lg md:text-2xl font-bold">{totalTravelDays}일</p>
-          </div>
-          <div className="text-xl md:text-3xl opacity-50">✈️</div>
-        </div>
-      </div>
-      
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
       {/* 방문 국가 수 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600">방문한 국가</p>
-            <p className="text-lg md:text-2xl font-bold">{visitedCountries}개국</p>
+            <p className="text-xs md:text-sm text-gray-600">Countries Visited</p>
+            <p className="text-lg md:text-2xl font-bold">{visitedCountries} countries</p>
           </div>
           <div className="text-xl md:text-3xl opacity-50">🌍</div>
         </div>
       </div>
       
-      {/* 올해 여행일수 */}
+      {/* Days traveled this year */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600">{currentYear}년 여행</p>
-            <p className="text-lg md:text-2xl font-bold">{thisYearDays}일</p>
+            <p className="text-xs md:text-sm text-gray-600">{currentYear} Travel</p>
+            <p className="text-lg md:text-2xl font-bold">{thisYearDays} days</p>
           </div>
           <div className="text-xl md:text-3xl opacity-50">📅</div>
         </div>
       </div>
       
-      {/* 현재 체류 중 */}
+      {/* Currently staying */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs md:text-sm text-gray-600">현재 체류</p>
+            <p className="text-xs md:text-sm text-gray-600">Current Stay</p>
             {currentCountry ? (
               <div>
                 <p className="text-sm md:text-lg font-bold">
                   {currentCountry.flag} {currentCountry.name}
                 </p>
-                <p className="text-xs text-blue-600">{daysInCurrentCountry}일째</p>
+                <p className="text-xs text-blue-600">Day {daysInCurrentCountry}</p>
               </div>
             ) : (
-              <p className="text-sm md:text-lg text-gray-400">여행 중 아님</p>
+              <p className="text-sm md:text-lg text-gray-400">Not traveling</p>
             )}
           </div>
           <div className="text-xl md:text-3xl opacity-50">📍</div>

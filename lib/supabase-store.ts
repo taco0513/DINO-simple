@@ -6,16 +6,20 @@ import { resolveStayOverlaps, resolveAllOverlaps } from './overlap-handler'
 interface SupabaseStoreState {
   stays: Stay[]
   loading: boolean
+  initialLoad: boolean
+  lastLoadTime: number | null
   addStay: (stay: Omit<Stay, 'user_id' | 'created_at' | 'updated_at'>) => Promise<void>
   updateStay: (id: string, stay: Partial<Stay>) => Promise<void>
   deleteStay: (id: string) => Promise<void>
-  loadStays: () => Promise<void>
+  loadStays: (force?: boolean) => Promise<void>
   migrateFromLocalStorage: () => Promise<void>
 }
 
 export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
   stays: [],
   loading: false,
+  initialLoad: false,
+  lastLoadTime: null,
   
   addStay: async (stayData) => {
     try {
@@ -128,8 +132,14 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
     }
   },
   
-  loadStays: async () => {
+  loadStays: async (force = false) => {
     try {
+      // Skip if already loaded recently (within 5 seconds) unless forced
+      const state = get()
+      if (!force && state.lastLoadTime && Date.now() - state.lastLoadTime < 5000 && state.initialLoad) {
+        return
+      }
+
       set({ loading: true })
       
       const { data: { user } } = await supabase.auth.getUser()
@@ -158,49 +168,8 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
         created_at: row.created_at,
         updated_at: row.updated_at,
       })) || []
-
-      // Remove duplicates based on same country, dates, and cities
-      const uniqueStays = stays.filter((stay, index, self) => 
-        index === self.findIndex((s) => 
-          s.countryCode === stay.countryCode &&
-          s.entryDate === stay.entryDate &&
-          s.exitDate === stay.exitDate &&
-          s.city === stay.city &&
-          s.fromCountryCode === stay.fromCountryCode &&
-          s.fromCity === stay.fromCity
-        )
-      )
-
-      // Only check for duplicates if we suspect there might be some
-      // (when the array lengths differ)
-      if (stays.length !== uniqueStays.length) {
-        const duplicateIds = stays
-          .filter((stay, index, self) => 
-            index !== self.findIndex((s) => 
-              s.countryCode === stay.countryCode &&
-              s.entryDate === stay.entryDate &&
-              s.exitDate === stay.exitDate &&
-              s.city === stay.city &&
-              s.fromCountryCode === stay.fromCountryCode &&
-              s.fromCity === stay.fromCity
-            )
-          )
-          .map(s => s.id)
-
-        // Delete all duplicates in a single query
-        if (duplicateIds.length > 0) {
-          console.log(`Removing ${duplicateIds.length} duplicate entries`)
-          await supabase
-            .from('stays')
-            .delete()
-            .in('id', duplicateIds)
-        }
-      }
-
-      // Resolve any overlaps
-      const resolvedStays = resolveAllOverlaps(uniqueStays)
       
-      set({ stays: resolvedStays })
+      set({ stays, initialLoad: true, lastLoadTime: Date.now() })
     } catch (error) {
       console.error('Error loading stays:', error)
     } finally {
@@ -210,6 +179,16 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
 
   migrateFromLocalStorage: async () => {
     try {
+      // Get data from localStorage first - quick check
+      const savedStays = localStorage.getItem('dino-stays')
+      if (!savedStays) return // No migration needed
+
+      const localStays: Stay[] = JSON.parse(savedStays)
+      if (localStays.length === 0) {
+        localStorage.removeItem('dino-stays')
+        return
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
@@ -225,13 +204,6 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
         localStorage.removeItem('dino-stays')
         return
       }
-
-      // Get data from localStorage
-      const savedStays = localStorage.getItem('dino-stays')
-      if (!savedStays) return
-
-      const localStays: Stay[] = JSON.parse(savedStays)
-      if (localStays.length === 0) return
 
       // Migrate each stay
       const staysToInsert = localStays.map(stay => ({
@@ -258,9 +230,6 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
 
       // Clear localStorage after successful migration
       localStorage.removeItem('dino-stays')
-      
-      // Reload stays from Supabase
-      await get().loadStays()
       
       console.log(`Successfully migrated ${localStays.length} stays to Supabase`)
     } catch (error) {
