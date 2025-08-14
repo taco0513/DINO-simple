@@ -112,7 +112,37 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {visaStatuses.length === 0 ? (
+      {loading ? (
+        // Loading skeleton
+        <div className="space-y-8">
+          <section>
+            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Overview</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white rounded-lg shadow p-4 animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              ))}
+            </div>
+          </section>
+          
+          <div className="border-t border-gray-100"></div>
+          
+          <section>
+            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Visa Status by Country</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="bg-white rounded-lg shadow p-6 animate-pulse">
+                  <div className="h-5 bg-gray-200 rounded w-2/3 mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                  <div className="h-2 bg-gray-200 rounded-full"></div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      ) : visaStatuses.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <p className="text-gray-500 mb-4">아직 여행 기록이 없습니다</p>
           <button

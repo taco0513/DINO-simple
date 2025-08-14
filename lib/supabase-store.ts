@@ -171,28 +171,29 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
         )
       )
 
-      // Delete duplicates from database
-      const duplicateIds = stays
-        .filter((stay, index, self) => 
-          index !== self.findIndex((s) => 
-            s.countryCode === stay.countryCode &&
-            s.entryDate === stay.entryDate &&
-            s.exitDate === stay.exitDate &&
-            s.city === stay.city &&
-            s.fromCountryCode === stay.fromCountryCode &&
-            s.fromCity === stay.fromCity
+      // Only check for duplicates if we suspect there might be some
+      // (when the array lengths differ)
+      if (stays.length !== uniqueStays.length) {
+        const duplicateIds = stays
+          .filter((stay, index, self) => 
+            index !== self.findIndex((s) => 
+              s.countryCode === stay.countryCode &&
+              s.entryDate === stay.entryDate &&
+              s.exitDate === stay.exitDate &&
+              s.city === stay.city &&
+              s.fromCountryCode === stay.fromCountryCode &&
+              s.fromCity === stay.fromCity
+            )
           )
-        )
-        .map(s => s.id)
+          .map(s => s.id)
 
-      // Delete duplicates from Supabase
-      if (duplicateIds.length > 0) {
-        console.log(`Removing ${duplicateIds.length} duplicate entries`)
-        for (const id of duplicateIds) {
+        // Delete all duplicates in a single query
+        if (duplicateIds.length > 0) {
+          console.log(`Removing ${duplicateIds.length} duplicate entries`)
           await supabase
             .from('stays')
             .delete()
-            .eq('id', id)
+            .in('id', duplicateIds)
         }
       }
 
