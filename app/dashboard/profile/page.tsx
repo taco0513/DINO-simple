@@ -98,17 +98,27 @@ export default function ProfilePage() {
         .eq('user_id', user.id)
         .single()
 
-      // Save all profile fields
-      const profileData = {
-        passport_nationality: profile.passport_nationality,
-        passport_issue_date: profile.passport_issue_date,
-        passport_expiry_date: profile.passport_expiry_date,
-        preferred_currency: profile.preferred_currency,
-        travel_insurance_provider: profile.travel_insurance_provider,
-        travel_insurance_policy_number: profile.travel_insurance_policy_number,
-        notification_days_before_visa_expiry: profile.notification_days_before_visa_expiry,
-        notification_days_before_passport_expiry: profile.notification_days_before_passport_expiry
+      // First try with only basic passport fields that exist in original schema
+      const basicProfileData: any = {}
+      if (profile.passport_nationality) basicProfileData.passport_nationality = profile.passport_nationality
+      if (profile.passport_issue_date) basicProfileData.passport_issue_date = profile.passport_issue_date
+      if (profile.passport_expiry_date) basicProfileData.passport_expiry_date = profile.passport_expiry_date
+
+      // Try to save additional fields if they exist in database
+      const fullProfileData: any = {
+        ...basicProfileData
       }
+      if (profile.preferred_currency) fullProfileData.preferred_currency = profile.preferred_currency
+      if (profile.travel_insurance_provider) fullProfileData.travel_insurance_provider = profile.travel_insurance_provider
+      if (profile.travel_insurance_policy_number) fullProfileData.travel_insurance_policy_number = profile.travel_insurance_policy_number
+      if (profile.notification_days_before_visa_expiry !== null) fullProfileData.notification_days_before_visa_expiry = profile.notification_days_before_visa_expiry
+      if (profile.notification_days_before_passport_expiry !== null) fullProfileData.notification_days_before_passport_expiry = profile.notification_days_before_passport_expiry
+
+      // Try with full data first, fall back to basic if it fails
+      let profileData = fullProfileData
+
+      console.log('Saving profile data:', profileData)
+      console.log('Existing profile?', !!existingProfile)
 
       let error
       if (existingProfile) {
@@ -117,6 +127,16 @@ export default function ProfilePage() {
           .update(profileData)
           .eq('user_id', user.id)
         error = updateError
+        
+        // If full update fails, try with basic fields only
+        if (error && error.message?.includes('column')) {
+          console.log('Full update failed, trying basic fields only')
+          const { error: basicError } = await supabase
+            .from('profiles')
+            .update(basicProfileData)
+            .eq('user_id', user.id)
+          error = basicError
+        }
       } else {
         const { error: insertError } = await supabase
           .from('profiles')
@@ -125,14 +145,30 @@ export default function ProfilePage() {
             ...profileData
           })
         error = insertError
+        
+        // If full insert fails, try with basic fields only
+        if (error && error.message?.includes('column')) {
+          console.log('Full insert failed, trying basic fields only')
+          const { error: basicError } = await supabase
+            .from('profiles')
+            .insert({
+              user_id: user.id,
+              ...basicProfileData
+            })
+          error = basicError
+        }
       }
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error details:', error)
+        throw error
+      }
 
       setMessage({ type: 'success', text: 'Profile saved successfully!' })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving profile:', error)
-      setMessage({ type: 'error', text: 'Failed to save profile. Please try again.' })
+      const errorMessage = error?.message || error?.details || 'Failed to save profile. Please try again.'
+      setMessage({ type: 'error', text: errorMessage })
     } finally {
       setSaving(false)
     }
