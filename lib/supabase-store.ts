@@ -159,8 +159,45 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
         updated_at: row.updated_at,
       })) || []
 
+      // Remove duplicates based on same country, dates, and cities
+      const uniqueStays = stays.filter((stay, index, self) => 
+        index === self.findIndex((s) => 
+          s.countryCode === stay.countryCode &&
+          s.entryDate === stay.entryDate &&
+          s.exitDate === stay.exitDate &&
+          s.city === stay.city &&
+          s.fromCountryCode === stay.fromCountryCode &&
+          s.fromCity === stay.fromCity
+        )
+      )
+
+      // Delete duplicates from database
+      const duplicateIds = stays
+        .filter((stay, index, self) => 
+          index !== self.findIndex((s) => 
+            s.countryCode === stay.countryCode &&
+            s.entryDate === stay.entryDate &&
+            s.exitDate === stay.exitDate &&
+            s.city === stay.city &&
+            s.fromCountryCode === stay.fromCountryCode &&
+            s.fromCity === stay.fromCity
+          )
+        )
+        .map(s => s.id)
+
+      // Delete duplicates from Supabase
+      if (duplicateIds.length > 0) {
+        console.log(`Removing ${duplicateIds.length} duplicate entries`)
+        for (const id of duplicateIds) {
+          await supabase
+            .from('stays')
+            .delete()
+            .eq('id', id)
+        }
+      }
+
       // Resolve any overlaps
-      const resolvedStays = resolveAllOverlaps(stays)
+      const resolvedStays = resolveAllOverlaps(uniqueStays)
       
       set({ stays: resolvedStays })
     } catch (error) {
