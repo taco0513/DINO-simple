@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   console.log('Feedback API called')
+  console.log('Environment variables check:')
+  console.log('RESEND_API_KEY exists:', !!process.env.RESEND_API_KEY)
+  console.log('FEEDBACK_EMAIL:', process.env.FEEDBACK_EMAIL)
   
   try {
     const body = await request.json()
@@ -29,8 +32,8 @@ export async function POST(request: NextRequest) {
         const { Resend } = await import('resend')
         const resend = new Resend(process.env.RESEND_API_KEY)
         
-        await resend.emails.send({
-          from: 'DINO Feedback <onboarding@resend.dev>', // Use Resend's test domain for now
+        const emailResult = await resend.emails.send({
+          from: 'onboarding@resend.dev', // Resend's test domain (no custom name allowed)
           to: process.env.FEEDBACK_EMAIL || 'hello@zimojin.com',
           subject: `[DINO Beta] ${feedbackType} feedback from ${userEmail}`,
           html: `
@@ -69,9 +72,16 @@ export async function POST(request: NextRequest) {
           }] : undefined
         })
         
-        console.log('Feedback email sent to:', process.env.FEEDBACK_EMAIL || 'hello@zimojin.com')
-      } catch (emailError) {
+        console.log('Feedback email sent successfully!')
+        console.log('Email ID:', emailResult.id)
+        console.log('Sent to:', process.env.FEEDBACK_EMAIL || 'hello@zimojin.com')
+      } catch (emailError: any) {
         console.error('Email sending failed:', emailError)
+        console.error('Error details:', {
+          message: emailError.message,
+          statusCode: emailError.statusCode,
+          name: emailError.name
+        })
         // Continue even if email fails - we still save to database
       }
     }
