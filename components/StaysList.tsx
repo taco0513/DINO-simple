@@ -39,35 +39,37 @@ export default function StaysList() {
     <>
       {/* Country Filter */}
       {visitedCountries.length > 1 && (
-        <div className="mb-4 flex items-center space-x-2">
-          <label className="text-sm text-gray-600">Filter by country:</label>
-          <select
-            value={selectedCountry}
-            onChange={(e) => setSelectedCountry(e.target.value)}
-            className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All countries ({stays.length} stays)</option>
-            {visitedCountries.map(country => {
-              const countryStayCount = stays.filter(s => s.countryCode === country.code).length
-              return (
-                <option key={country.code} value={country.code}>
-                  {country.flag} {country.name} ({countryStayCount} {countryStayCount === 1 ? 'stay' : 'stays'})
-                </option>
-              )
-            })}
-          </select>
-          {selectedCountry && (
-            <button
-              onClick={() => setSelectedCountry('')}
-              className="px-2 py-1 text-xs text-gray-600 hover:text-gray-800"
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-2">
+          <label className="text-sm text-gray-600 flex-shrink-0">Filter by country:</label>
+          <div className="flex gap-2 flex-1">
+            <select
+              value={selectedCountry}
+              onChange={(e) => setSelectedCountry(e.target.value)}
+              className="flex-1 sm:flex-initial px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              Clear filter
-            </button>
-          )}
+              <option value="">All countries ({stays.length} stays)</option>
+              {visitedCountries.map(country => {
+                const countryStayCount = stays.filter(s => s.countryCode === country.code).length
+                return (
+                  <option key={country.code} value={country.code}>
+                    {country.flag} {country.name} ({countryStayCount} {countryStayCount === 1 ? 'stay' : 'stays'})
+                  </option>
+                )
+              })}
+            </select>
+            {selectedCountry && (
+              <button
+                onClick={() => setSelectedCountry('')}
+                className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="divide-y divide-gray-100">
           {sortedStays.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
@@ -108,51 +110,120 @@ export default function StaysList() {
               }
               
               return (
-                <div key={stay.id} className="p-4 hover:bg-gray-50 flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <span className="text-2xl">{country?.flag}</span>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <p className="font-medium">
-                          {country?.name}
-                          {stay.city && <span className="text-gray-600"> ({stay.city})</span>}
+                <div key={stay.id} className="p-4 md:p-5 hover:bg-gray-50 transition-colors">
+                  {/* Mobile Layout (default) */}
+                  <div className="md:hidden">
+                    {/* Header with flag and status badge */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl flex-shrink-0">{country?.flag}</span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-gray-900 leading-tight">
+                            {country?.name}
+                            {stay.city && (
+                              <span className="text-gray-600 text-sm block mt-0.5">{stay.city}</span>
+                            )}
+                          </h3>
+                        </div>
+                      </div>
+                      {/* Status Badge */}
+                      {(isCurrentlyStaying || isFutureTrip) && (
+                        <span className={`flex-shrink-0 text-xs px-2 py-1 rounded-full ${
+                          isCurrentlyStaying 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {isCurrentlyStaying ? 'Current' : 'Future'}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Travel Details */}
+                    <div className="space-y-1.5 mb-3 text-sm">
+                      {fromCountry && (
+                        <div className="flex items-center text-gray-500">
+                          <span className="text-xs mr-1">From:</span>
+                          <span className="text-base mr-1">{fromCountry.flag}</span>
+                          <span className="truncate">
+                            {fromCountry.name}
+                            {stay.fromCity && <span> ({stay.fromCity})</span>}
+                          </span>
+                        </div>
+                      )}
+                      <div className="text-gray-600">
+                        <div className="font-medium">
+                          {stay.entryDate} ~ {stay.exitDate || 'Present'}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {durationText}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setEditingStay(stay)}
+                        className="flex-1 px-3 py-1.5 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(stay.id)}
+                        className="flex-1 px-3 py-1.5 text-sm bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Desktop Layout */}
+                  <div className="hidden md:flex md:items-center md:justify-between">
+                    <div className="flex items-center space-x-4">
+                      <span className="text-2xl">{country?.flag}</span>
+                      <div>
+                        <div className="flex items-center flex-wrap gap-2">
+                          <p className="font-medium">
+                            {country?.name}
+                            {stay.city && <span className="text-gray-600"> ({stay.city})</span>}
+                          </p>
                           {isCurrentlyStaying && (
-                            <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
                               Currently staying
                             </span>
                           )}
                           {isFutureTrip && (
-                            <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                               Future trip
                             </span>
                           )}
+                        </div>
+                        {fromCountry && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            From: {fromCountry.flag} {fromCountry.name}
+                            {stay.fromCity && <span> ({stay.fromCity})</span>}
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-600 mt-1">
+                          {stay.entryDate} ~ {stay.exitDate || 'Present'}
+                          <span className="ml-2 text-xs text-gray-500">({durationText})</span>
                         </p>
                       </div>
-                      {fromCountry && (
-                        <p className="text-xs text-gray-500 mb-1">
-                          From: {fromCountry.flag} {fromCountry.name}
-                          {stay.fromCity && <span> ({stay.fromCity})</span>}
-                        </p>
-                      )}
-                      <p className="text-sm text-gray-600">
-                        {stay.entryDate} ~ {stay.exitDate || 'Present'}
-                        <span className="ml-2 text-xs text-gray-500">({durationText})</span>
-                      </p>
                     </div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => setEditingStay(stay)}
-                      className="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(stay.id)}
-                      className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded hover:bg-red-200"
-                    >
-                      Delete
-                    </button>
+                    <div className="flex space-x-2 flex-shrink-0">
+                      <button
+                        onClick={() => setEditingStay(stay)}
+                        className="px-3 py-1 text-sm bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(stay.id)}
+                        className="px-3 py-1 text-sm bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               )

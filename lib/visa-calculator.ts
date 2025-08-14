@@ -10,6 +10,8 @@ export function calculateVisaStatus(
   // Ensure reference date is normalized to start of day
   referenceDate = startOfDay(referenceDate)
   let daysUsed = 0
+  let currentDays = 0  // Days from past and current stays
+  let plannedDays = 0  // Days from future stays
   const countryStays = stays.filter(s => s.countryCode === country.code)
   
   // Check for special Korea 183/365 visa type
@@ -54,6 +56,22 @@ export function calculateVisaStatus(
           if (!previousExit || differenceInDays(previousExit, exitDate) < 7) {
             const stayDays = differenceInDays(exitDate, entryDate) + 1
             currentGroupDays += stayDays
+            
+            // Separate current/past days from future days
+            if (entryDate > referenceDate) {
+              // Future stay
+              plannedDays += stayDays
+            } else if (exitDate > referenceDate) {
+              // Ongoing stay (started in past, extends to future)
+              const pastDays = differenceInDays(referenceDate, entryDate) + 1
+              const futureDays = differenceInDays(exitDate, referenceDate)
+              currentDays += pastDays
+              plannedDays += futureDays
+            } else {
+              // Past stay
+              currentDays += stayDays
+            }
+            
             previousExit = entryDate
           } else {
             // Gap is too large, stop counting
@@ -93,6 +111,26 @@ export function calculateVisaStatus(
           if (overlapStart <= overlapEnd) {
             const diffDays = differenceInDays(overlapEnd, overlapStart)
             const overlap = diffDays + 1
+            
+            // Separate current/past days from future days within the overlap
+            if (entryDate > referenceDate) {
+              // Future stay
+              plannedDays += overlap
+            } else if (exitDate > referenceDate) {
+              // Ongoing stay (crosses today)
+              // Calculate days up to today (including today)
+              const startDate = overlapStart > entryDate ? overlapStart : entryDate
+              const daysToToday = differenceInDays(referenceDate, startDate) + 1
+              // Calculate days after today
+              const endDate = overlapEnd < exitDate ? overlapEnd : exitDate
+              const daysAfterToday = differenceInDays(endDate, referenceDate)
+              
+              currentDays += Math.max(0, daysToToday)
+              plannedDays += Math.max(0, daysAfterToday)
+            } else {
+              // Past stay
+              currentDays += overlap
+            }
             
             // Debug logging for Korea
             if (country.code === 'KR' && hasSpecialKoreaVisa) {
@@ -134,6 +172,8 @@ export function calculateVisaStatus(
   return {
     country,
     daysUsed,
+    currentDays,
+    plannedDays,
     maxDays: rule.maxDays,
     remainingDays,
     percentage: Math.min(100, percentage),

@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  /* Prevent text overflow on mobile */
+  .text-truncate-mobile {
+    @apply truncate sm:overflow-visible sm:whitespace-normal;
+  }
+  
+  /* Better touch targets for mobile */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}

@@ -30,6 +30,8 @@ export interface VisaRule {
 export interface VisaStatus {
   country: Country
   daysUsed: number
+  currentDays?: number  // Days from past/current stays
+  plannedDays?: number  // Days from future stays
   maxDays: number
   remainingDays: number
   percentage: number
