@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         })
         
         console.log('Feedback email sent successfully!')
-        console.log('Email ID:', emailResult.id)
+        console.log('Email result:', emailResult)
         console.log('Sent to:', process.env.FEEDBACK_EMAIL || 'hello@zimojin.com')
       } catch (emailError: any) {
         console.error('Email sending failed:', emailError)
