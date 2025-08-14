@@ -93,7 +93,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 
 ### Supabase Setup Requirements
 1. Run migrations in order (see `supabase/migrations/`)
-2. Enable RLS on all tables
+   - `001_create_stays_table.sql` - Creates stays table for travel records
+   - `002_create_profiles_table.sql` - Creates profiles table with basic fields
+   - `003_add_profile_columns.sql` - Adds preferences and insurance fields
+   - `004_fix_profiles_rls.sql` - Fixes RLS policies for profiles
+   - `005_fix_profiles_complete.sql` - Comprehensive RLS fix (run if 004 fails)
+   - `ALTER TABLE audit_logs DISABLE ROW LEVEL SECURITY;` - Fix audit logs blocking
+2. Enable RLS on all tables (migrations handle this)
 3. Update Auth URLs for production domain
 4. Configure email settings for auth
 
@@ -105,7 +111,21 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 3. **Dashboard Slow Loading**: Fixed by removing duplicate detection and adding cache
 4. **Mobile Tab UI**: Fixed with icon-only display and responsive layout
 
-### Recently Fixed Issues (2025.08.14)
+### Fixed Issues (2025.08.14) - Version 1.3.1
+1. **Profile Saving Issues**: Complete fix for passport information storage
+   - Solution: Added proper RLS policies for profiles table
+   - Fix: Disabled RLS on audit_logs table to prevent blocking
+   - Added fallback logic for missing database columns
+   - Run migrations 003-006 to fix database schema
+2. **Feedback Email Delivery**: Emails not arriving at hello@zimojin.com  
+   - Solution: Changed to zbrianjin@gmail.com (Resend free tier limitation)
+3. **UI/UX Improvements**:
+   - Removed emergency contact tab (simplified interface)
+   - Fixed countries list alphabetical ordering
+   - Added drag & drop for feedback screenshots
+   - Fixed Next.js static chunk 404 errors
+
+### Previously Fixed Issues (2025.08.14)
 1. **Future Trip Display Bug**: Future trips incorrectly showing as "Currently staying"
    - Solution: Added proper date comparison logic with time normalization
 2. **Current Stay Statistics**: Stats not showing for trips with exit dates in the future

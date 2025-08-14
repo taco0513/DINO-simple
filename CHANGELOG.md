@@ -5,6 +5,35 @@ All notable changes to the DINO project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2025-08-14
+
+### Fixed
+- **🔐 Profile Saving**: Complete fix for passport information storage
+  - Added Row Level Security (RLS) policies for profiles table (INSERT, UPDATE, DELETE)
+  - Fixed audit_logs table RLS blocking profile updates
+  - Added fallback logic for missing database columns
+  - Improved error messages for database issues
+  - Created migrations 003-006 for database schema updates
+
+- **🎨 UI/UX Improvements**: Enhanced user experience
+  - Removed emergency contact tab (simplified profile interface)
+  - Moved travel insurance fields to Preferences tab
+  - Fixed countries list alphabetical ordering
+  - Added drag & drop support for feedback screenshot uploads
+  - Fixed Next.js static chunk 404 errors
+
+### Changed
+- **📧 Feedback Email**: Updated recipient due to Resend limitations
+  - Changed from hello@zimojin.com to zbrianjin@gmail.com
+  - Added clear documentation about Resend free tier restrictions
+
+### Added
+- **📚 Database Migrations**: New migration files for production
+  - `003_add_profile_columns.sql` - Adds preferences and insurance fields
+  - `004_fix_profiles_rls.sql` - Fixes RLS policies for profiles
+  - `005_fix_profiles_complete.sql` - Comprehensive RLS fix
+  - `006_fix_audit_logs_rls.sql` - Fixes audit logs table issues
+
 ## [1.3.0] - 2025-08-14 🚀 BETA LAUNCH
 
 ### Added

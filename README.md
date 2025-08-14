@@ -36,7 +36,7 @@
   - 외부 링크 표시기
 
 ### 기존 주요 기능
-- **👤 사용자 프로필 관리**: 프로필 정보 업데이트 및 아바타 표시
+- **👤 사용자 프로필 관리**: 여권 정보, 여행 보험, 알림 설정 관리
 - **📅 캘린더 뷰**: 12개월 여행 기록을 한눈에 볼 수 있는 시각화
 - **📤 CSV 가져오기/내보내기**: 대량 데이터 가져오기 및 백업 기능
 - **🎯 현재 체류 상태**: 실시간 체류 국가 및 일수 표시
@@ -64,7 +64,13 @@ npm install
 ### 2. Supabase 설정
 
 1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
-2. SQL Editor에서 `supabase-schema.sql` 파일의 내용 실행
+2. SQL Editor에서 다음 마이그레이션 실행 (순서대로):
+   - `supabase/migrations/001_create_stays_table.sql`
+   - `supabase/migrations/002_create_profiles_table.sql`
+   - `supabase/migrations/003_add_profile_columns.sql`
+   - `supabase/migrations/004_fix_profiles_rls.sql`
+   - `supabase/migrations/005_fix_profiles_complete.sql`
+   - `ALTER TABLE audit_logs DISABLE ROW LEVEL SECURITY;`
 3. Authentication > Settings에서:
    - Enable email confirmations (선택사항)
    - Enable social providers (Google, GitHub 등)
