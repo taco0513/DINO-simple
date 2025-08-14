@@ -17,32 +17,57 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const processFile = (file: File) => {
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Screenshot must be less than 5MB')
+      return
+    }
+    
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file')
+      return
+    }
+    
+    setScreenshot(file)
+    setError(null)
+    
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setScreenshotPreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
 
   const handleScreenshotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Screenshot must be less than 5MB')
-        return
-      }
-      
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-        setError('Please upload an image file')
-        return
-      }
-      
-      setScreenshot(file)
-      setError(null)
-      
-      // Create preview
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setScreenshotPreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+      processFile(file)
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(false)
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setIsDragging(false)
+    
+    const file = e.dataTransfer.files?.[0]
+    if (file) {
+      processFile(file)
     }
   }
 
@@ -227,7 +252,11 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
                     </button>
                   </div>
                 ) : (
-                  <div>
+                  <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -238,14 +267,20 @@ export default function FeedbackModal({ onClose }: FeedbackModalProps) {
                     />
                     <label
                       htmlFor="screenshot-upload"
-                      className="flex items-center justify-center w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 transition-colors"
+                      className={`flex flex-col items-center justify-center w-full px-4 py-6 border-2 border-dashed rounded-lg cursor-pointer transition-all ${
+                        isDragging 
+                          ? 'border-blue-500 bg-blue-50 scale-105' 
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
                     >
-                      <svg className="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className={`w-8 h-8 mb-2 ${isDragging ? 'text-blue-500' : 'text-gray-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
-                      <span className="text-sm text-gray-600">Click to upload screenshot</span>
+                      <span className={`text-sm ${isDragging ? 'text-blue-600 font-medium' : 'text-gray-600'}`}>
+                        {isDragging ? 'Drop your screenshot here!' : 'Click or drag screenshot here'}
+                      </span>
+                      <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
                     </label>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB</p>
                   </div>
                 )}
               </div>
