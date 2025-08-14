@@ -38,22 +38,22 @@ export function calculateVisaStatus(
     case 'reset':
       // For reset type, find continuous stays (no gap or minimal gap between stays)
       const sortedStays = countryStays
-        .sort((a, b) => new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime())
+        .sort((a, b) => new Date(b.entryDate).getTime() - new Date(a.entryDate).getTime()) // Sort by newest first
       
       if (sortedStays.length > 0) {
         // Find the most recent continuous stay group
         let currentGroupDays = 0
-        let previousExit: Date | null = null
+        let nextEntry: Date | null = null
         
-        // Process stays from oldest to newest
-        for (let i = sortedStays.length - 1; i >= 0; i--) {
+        // Process stays from newest to oldest
+        for (let i = 0; i < sortedStays.length; i++) {
           const stay = sortedStays[i]
           const entryDate = startOfDay(parseISO(stay.entryDate))
           const exitDate = stay.exitDate ? startOfDay(parseISO(stay.exitDate)) : referenceDate
           
           // If this is the first stay we're checking (most recent) or
-          // if there's no significant gap (< 7 days) between this stay and the previous one
-          if (!previousExit || differenceInDays(previousExit, exitDate) < 7) {
+          // if there's no significant gap (< 7 days) between this stay's exit and the next stay's entry
+          if (!nextEntry || differenceInDays(nextEntry, exitDate) < 7) {
             const stayDays = differenceInDays(exitDate, entryDate) + 1
             currentGroupDays += stayDays
             
@@ -72,7 +72,7 @@ export function calculateVisaStatus(
               currentDays += stayDays
             }
             
-            previousExit = entryDate
+            nextEntry = entryDate
           } else {
             // Gap is too large, stop counting
             break
