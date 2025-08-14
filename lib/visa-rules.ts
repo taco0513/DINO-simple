@@ -57,7 +57,7 @@ export const visaRules: Record<string, VisaRule> = {
   
   // Americas
   CA: { maxDays: 180, periodDays: 365, ruleType: 'rolling', resetInfo: '180 days in any 365-day period' },
-  US: { maxDays: 0, ruleType: 'reset', resetInfo: 'US citizens do not need visa for domestic travel' },
+  US: { maxDays: 9999, ruleType: 'reset', resetInfo: 'No visa required for US citizens in the United States' },
   MX: { maxDays: 180, ruleType: 'reset', resetInfo: 'Up to 180 days per entry. Tourist card required.' },
   BR: { maxDays: 90, ruleType: 'reset', resetInfo: 'Can extend once for 90 days (180 total).' },
   AR: { maxDays: 90, ruleType: 'reset', resetInfo: 'Can extend for 90 days. Easy to reset via border run.' },

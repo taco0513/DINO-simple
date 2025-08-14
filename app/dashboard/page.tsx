@@ -75,9 +75,12 @@ export default function DashboardPage() {
     .filter((c): c is typeof countries[0] => c !== undefined)
 
   // Calculate visa status for each visited country
-  const visaStatuses = visitedCountries.map(country => 
-    calculateVisaStatus(stays, country)
-  )
+  // Filter out US for US passport holders (temporary fix until passport nationality is implemented)
+  const visaStatuses = visitedCountries
+    .filter(country => country.code !== 'US') // Skip US for US passport holders
+    .map(country => 
+      calculateVisaStatus(stays, country)
+    )
 
   return (
     <ProtectedRoute>
