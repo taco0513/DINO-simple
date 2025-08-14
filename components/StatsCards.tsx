@@ -10,27 +10,39 @@ export default function StatsCards() {
   // Number of countries visited
   const visitedCountries = [...new Set(stays.map(s => s.countryCode))].length
   
-  // Calculate days traveled this year
+  // Calculate days traveled this year (from Jan 1 to today)
   const currentYear = new Date().getFullYear()
-  const yearStart = startOfYear(new Date())
-  const yearEnd = endOfYear(new Date())
+  const yearStart = new Date(currentYear, 0, 1) // January 1st of current year
+  const today = new Date()
   
-  const thisYearDays = stays.reduce((total, stay) => {
-    const entryDate = parseISO(stay.entryDate)
-    const exitDate = stay.exitDate ? parseISO(stay.exitDate) : new Date()
-    
-    // Calculate only the overlapping period in this year
-    const overlapStart = entryDate < yearStart ? yearStart : entryDate
-    const overlapEnd = exitDate > yearEnd ? yearEnd : exitDate
-    
-    if (overlapStart <= overlapEnd && overlapStart.getFullYear() === currentYear) {
-      return total + differenceInDays(overlapEnd, overlapStart) + 1
-    }
-    return total
-  }, 0)
+  const thisYearDays = stays
+    .filter(stay => {
+      // Include any stay that overlaps with the current year
+      const entryDate = new Date(stay.entryDate)
+      const exitDate = stay.exitDate ? new Date(stay.exitDate) : today
+      
+      // Check if the stay overlaps with the current year (from Jan 1 to today)
+      return exitDate >= yearStart && entryDate <= today
+    })
+    .reduce((total, stay) => {
+      const entryDate = new Date(stay.entryDate)
+      const exitDate = stay.exitDate ? new Date(stay.exitDate) : today
+      
+      // Calculate the overlap with the current year
+      const effectiveStart = entryDate > yearStart ? entryDate : yearStart
+      const effectiveEnd = exitDate < today ? exitDate : today
+      
+      // Only count if there's a valid overlap
+      if (effectiveEnd >= effectiveStart) {
+        const msPerDay = 1000 * 60 * 60 * 24
+        const daysDiff = Math.floor((effectiveEnd.getTime() - effectiveStart.getTime()) / msPerDay)
+        const days = daysDiff + 1 // Add 1 to include both start and end dates
+        return total + days
+      }
+      return total
+    }, 0)
   
   // Currently staying in country (including stays with exit dates that haven't passed yet)
-  const today = new Date()
   const currentStay = stays.find(s => {
     const entryDate = new Date(s.entryDate)
     const exitDate = s.exitDate ? new Date(s.exitDate) : null

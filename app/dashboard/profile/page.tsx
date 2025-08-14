@@ -291,7 +291,6 @@ export default function ProfilePage() {
           const msPerDay = 1000 * 60 * 60 * 24
           const daysDiff = Math.floor((effectiveEnd.getTime() - effectiveStart.getTime()) / msPerDay)
           const days = daysDiff + 1 // Add 1 to include both start and end dates
-          
           return total + days
         }
         return total
