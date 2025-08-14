@@ -25,6 +25,8 @@ export interface VisaRule {
   periodDays?: number
   ruleType: 'reset' | 'rolling' | 'annual'
   resetInfo?: string // Information about how the visa resets
+  sourceUrl?: string // Official source for visa information
+  lastUpdated?: string // When the information was last verified (YYYY-MM format)
 }
 
 export interface VisaStatus {

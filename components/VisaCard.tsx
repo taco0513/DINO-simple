@@ -143,8 +143,31 @@ export default function VisaCard({ status }: VisaCardProps) {
             </button>
             
             {showInfo && (
-              <div className="mt-2 p-2 bg-blue-50 rounded text-xs text-gray-700">
-                {visaRule.resetInfo}
+              <div className="mt-2 p-3 bg-blue-50 rounded text-xs space-y-2">
+                <p className="text-gray-700">{visaRule.resetInfo}</p>
+                
+                {/* Source link and disclaimer */}
+                <div className="pt-2 border-t border-blue-100">
+                  {visaRule.sourceUrl && (
+                    <a 
+                      href={visaRule.sourceUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 underline flex items-center gap-1"
+                    >
+                      <span>Official Source</span>
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
+                  {visaRule.lastUpdated && (
+                    <p className="text-gray-500 mt-1">Last verified: {visaRule.lastUpdated}</p>
+                  )}
+                  <p className="text-gray-500 italic mt-1">
+                    ⚠️ Visa rules can change. Always verify with official sources before travel.
+                  </p>
+                </div>
               </div>
             )}
           </div>

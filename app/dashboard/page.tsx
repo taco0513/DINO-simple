@@ -12,10 +12,12 @@ import StaysList from '@/components/StaysList'
 import StatsCards from '@/components/StatsCards'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/components/AuthProvider'
+import FeedbackModal from '@/components/FeedbackModal'
 
 export default function DashboardPage() {
   const { stays, loadStays, migrateFromLocalStorage, loading, initialLoad } = useSupabaseStore()
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const { user } = useAuth()
 
   useEffect(() => {
@@ -101,6 +103,20 @@ export default function DashboardPage() {
             </svg>
             Add Stay Record
           </button>
+        </div>
+        
+        {/* Disclaimer */}
+        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start gap-2">
+            <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-xs text-amber-800">
+              <strong>Disclaimer:</strong> Visa information is provided as a general guide only and may not be 100% accurate. 
+              Rules change frequently. Always verify with official government sources before travel. 
+              DINO is not liable for any issues arising from reliance on this information.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -202,6 +218,21 @@ export default function DashboardPage() {
       )}
 
       {showAddModal && <AddStayModal onClose={() => setShowAddModal(false)} />}
+      {showFeedbackModal && <FeedbackModal onClose={() => setShowFeedbackModal(false)} />}
+      
+      {/* Floating Feedback Button */}
+      <button
+        onClick={() => setShowFeedbackModal(true)}
+        className="fixed bottom-6 right-6 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all hover:scale-110 group"
+        title="Send Feedback"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span className="absolute -top-8 right-0 bg-purple-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          Beta Feedback
+        </span>
+      </button>
       </div>
     </ProtectedRoute>
   )

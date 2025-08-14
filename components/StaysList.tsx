@@ -11,6 +11,8 @@ export default function StaysList() {
   const { stays, deleteStay } = useSupabaseStore()
   const [editingStay, setEditingStay] = useState<Stay | null>(null)
   const [selectedCountry, setSelectedCountry] = useState<string>('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 5
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this?')) {
@@ -33,6 +35,18 @@ export default function StaysList() {
     new Date(b.entryDate).getTime() - new Date(a.entryDate).getTime()
   )
 
+  // Pagination logic
+  const totalPages = Math.ceil(sortedStays.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedStays = sortedStays.slice(startIndex, endIndex)
+
+  // Reset to page 1 when filter changes
+  const handleCountryChange = (value: string) => {
+    setSelectedCountry(value)
+    setCurrentPage(1)
+  }
+
   if (stays.length === 0) return null
 
   return (
@@ -44,7 +58,7 @@ export default function StaysList() {
           <div className="flex gap-2 flex-1">
             <select
               value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
+              onChange={(e) => handleCountryChange(e.target.value)}
               className="flex-1 sm:flex-initial px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">All countries ({stays.length} stays)</option>
@@ -59,7 +73,7 @@ export default function StaysList() {
             </select>
             {selectedCountry && (
               <button
-                onClick={() => setSelectedCountry('')}
+                onClick={() => handleCountryChange('')}
                 className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 Clear
@@ -76,7 +90,7 @@ export default function StaysList() {
               No stays found for the selected country.
             </div>
           ) : (
-            sortedStays.map((stay) => {
+            paginatedStays.map((stay) => {
               const country = countries.find(c => c.code === stay.countryCode)
               const fromCountry = stay.fromCountryCode ? countries.find(c => c.code === stay.fromCountryCode) : null
               
@@ -230,6 +244,132 @@ export default function StaysList() {
             })
           )}
         </div>
+        
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="p-4 border-t border-gray-100 bg-gray-50">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Showing info */}
+              <div className="text-sm text-gray-600">
+                Showing {startIndex + 1}-{Math.min(endIndex, sortedStays.length)} of {sortedStays.length} stays
+              </div>
+              
+              {/* Page controls */}
+              <div className="hidden sm:flex items-center gap-2">
+                {/* Previous button */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                    currentPage === 1 
+                      ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  Previous
+                </button>
+                
+                {/* Page numbers */}
+                <div className="flex items-center gap-1">
+                  {/* First page */}
+                  {currentPage > 3 && (
+                    <>
+                      <button
+                        onClick={() => setCurrentPage(1)}
+                        className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors"
+                      >
+                        1
+                      </button>
+                      {currentPage > 4 && <span className="px-1 text-gray-400">...</span>}
+                    </>
+                  )}
+                  
+                  {/* Page numbers around current page */}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter(page => {
+                      if (totalPages <= 7) return true
+                      if (page === 1 || page === totalPages) return false
+                      return Math.abs(page - currentPage) <= 2
+                    })
+                    .map(page => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                          page === currentPage
+                            ? 'bg-blue-600 text-white border-blue-600'
+                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                  
+                  {/* Last page */}
+                  {currentPage < totalPages - 2 && (
+                    <>
+                      {currentPage < totalPages - 3 && <span className="px-1 text-gray-400">...</span>}
+                      <button
+                        onClick={() => setCurrentPage(totalPages)}
+                        className="px-3 py-1.5 text-sm rounded-lg border border-gray-300 bg-white hover:bg-gray-50 transition-colors"
+                      >
+                        {totalPages}
+                      </button>
+                    </>
+                  )}
+                </div>
+                
+                {/* Next button */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                    currentPage === totalPages 
+                      ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed' 
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            
+            {/* Mobile pagination - simplified */}
+            <div className="sm:hidden mt-4 flex items-center justify-center gap-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-lg border transition-colors ${
+                  currentPage === 1 
+                    ? 'bg-gray-100 text-gray-400 border-gray-200' 
+                    : 'bg-white text-gray-700 border-gray-300'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <span className="px-4 py-2 text-sm">
+                Page {currentPage} of {totalPages}
+              </span>
+              
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-lg border transition-colors ${
+                  currentPage === totalPages 
+                    ? 'bg-gray-100 text-gray-400 border-gray-200' 
+                    : 'bg-white text-gray-700 border-gray-300'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {editingStay && (
