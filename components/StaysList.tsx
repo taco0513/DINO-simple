@@ -77,6 +77,14 @@ export default function StaysList() {
               const country = countries.find(c => c.code === stay.countryCode)
               const fromCountry = stay.fromCountryCode ? countries.find(c => c.code === stay.fromCountryCode) : null
               
+              const entryDate = new Date(stay.entryDate)
+              const today = new Date()
+              today.setHours(0, 0, 0, 0) // Set to start of day for accurate comparison
+              entryDate.setHours(0, 0, 0, 0)
+              
+              const isFutureTrip = entryDate > today
+              const isCurrentlyStaying = !stay.exitDate && entryDate <= today
+              
               return (
                 <div key={stay.id} className="p-4 hover:bg-gray-50 flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -86,9 +94,14 @@ export default function StaysList() {
                         <p className="font-medium">
                           {country?.name}
                           {stay.city && <span className="text-gray-600"> ({stay.city})</span>}
-                          {!stay.exitDate && (
+                          {isCurrentlyStaying && (
                             <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
                               Currently staying
+                            </span>
+                          )}
+                          {isFutureTrip && (
+                            <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                              Future trip
                             </span>
                           )}
                         </p>

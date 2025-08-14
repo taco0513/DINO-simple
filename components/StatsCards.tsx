@@ -29,8 +29,8 @@ export default function StatsCards() {
     return total
   }, 0)
   
-  // Currently staying in country
-  const currentStay = stays.find(s => !s.exitDate)
+  // Currently staying in country (not future trips)
+  const currentStay = stays.find(s => !s.exitDate && new Date(s.entryDate) <= new Date())
   const currentCountry = currentStay 
     ? countries.find(c => c.code === currentStay.countryCode)
     : null
