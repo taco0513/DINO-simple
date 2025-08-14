@@ -159,12 +159,12 @@ export default function YearCalendar({ currentDate, onDateChange, selectedCountr
               >
                 {hasStay && !isToday ? (
                   // Green for future stays, gray for past stays
-                  <div className={`w-6 h-6 ${isFuture ? 'bg-green-400' : 'bg-gray-400'} rounded-full flex items-center justify-center text-white text-xs font-semibold`}>
+                  <div className={`w-6 h-6 ${isFuture ? 'bg-teal-500' : 'bg-slate-500'} rounded-full flex items-center justify-center text-white text-xs font-semibold`}>
                     {format(day, 'd')}
                   </div>
                 ) : isToday ? (
                   // Blue circle for today
-                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-semibold shadow-sm">
                     {format(day, 'd')}
                   </div>
                 ) : (

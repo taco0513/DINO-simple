@@ -99,10 +99,21 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 
 ## Known Issues & Solutions
 
+### Previously Fixed Issues
 1. **Profile Save Error**: Run `supabase/migrations/update_profiles_safe.sql` to add missing columns
 2. **Korea Visa Calculation**: Must use 365-day period, not 364
 3. **Dashboard Slow Loading**: Fixed by removing duplicate detection and adding cache
 4. **Mobile Tab UI**: Fixed with icon-only display and responsive layout
+
+### Recently Fixed Issues (2025.08.14)
+1. **Future Trip Display Bug**: Future trips incorrectly showing as "Currently staying"
+   - Solution: Added proper date comparison logic with time normalization
+2. **Current Stay Statistics**: Stats not showing for trips with exit dates in the future
+   - Solution: Updated logic to check if today falls within entry-exit range
+3. **Travel History Duration**: Added duration display for all trips
+   - Shows: X days (completed), Day X (ongoing), X days planned (future)
+4. **Vercel Deployment Issues**: Build cache causing module resolution errors
+   - Solution: Delete and recreate project, ensure baseUrl in tsconfig.json
 
 ## Testing Specific Features
 

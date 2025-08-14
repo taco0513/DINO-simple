@@ -29,8 +29,25 @@ export default function StatsCards() {
     return total
   }, 0)
   
-  // Currently staying in country (not future trips)
-  const currentStay = stays.find(s => !s.exitDate && new Date(s.entryDate) <= new Date())
+  // Currently staying in country (including stays with exit dates that haven't passed yet)
+  const today = new Date()
+  const currentStay = stays.find(s => {
+    const entryDate = new Date(s.entryDate)
+    const exitDate = s.exitDate ? new Date(s.exitDate) : null
+    
+    // Check if today is between entry and exit dates
+    if (entryDate <= today) {
+      if (!exitDate) {
+        // No exit date means ongoing
+        return true
+      } else if (exitDate >= today) {
+        // Exit date is in the future or today
+        return true
+      }
+    }
+    return false
+  })
+  
   const currentCountry = currentStay 
     ? countries.find(c => c.code === currentStay.countryCode)
     : null

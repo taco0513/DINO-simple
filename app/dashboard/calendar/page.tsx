@@ -49,15 +49,15 @@ export default function CalendarPage() {
         <h3 className="text-sm font-medium text-gray-900 mb-3">Legend</h3>
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 bg-blue-500 rounded-full"></div>
+            <div className="w-5 h-5 bg-orange-500 rounded-full shadow-sm"></div>
             <span className="text-sm text-gray-700">Today</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 bg-gray-400 rounded"></div>
+            <div className="w-5 h-5 bg-slate-500 rounded"></div>
             <span className="text-sm text-gray-700">Past Stays</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 bg-green-400 rounded"></div>
+            <div className="w-5 h-5 bg-teal-500 rounded"></div>
             <span className="text-sm text-gray-700">Future Stays</span>
           </div>
           {hasKoreaSpecialVisa && (

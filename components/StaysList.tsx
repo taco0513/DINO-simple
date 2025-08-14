@@ -5,6 +5,7 @@ import { Stay } from '@/lib/types'
 import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
 import EditStayModal from './EditStayModal'
+import { differenceInDays, parseISO } from 'date-fns'
 
 export default function StaysList() {
   const { stays, deleteStay } = useSupabaseStore()
@@ -78,12 +79,33 @@ export default function StaysList() {
               const fromCountry = stay.fromCountryCode ? countries.find(c => c.code === stay.fromCountryCode) : null
               
               const entryDate = new Date(stay.entryDate)
+              const exitDate = stay.exitDate ? new Date(stay.exitDate) : null
               const today = new Date()
               today.setHours(0, 0, 0, 0) // Set to start of day for accurate comparison
               entryDate.setHours(0, 0, 0, 0)
+              if (exitDate) exitDate.setHours(0, 0, 0, 0)
               
               const isFutureTrip = entryDate > today
-              const isCurrentlyStaying = !stay.exitDate && entryDate <= today
+              const isCurrentlyStaying = entryDate <= today && (!exitDate || exitDate >= today)
+              
+              // Calculate duration
+              let duration = 0
+              let durationText = ''
+              if (isFutureTrip) {
+                // Future trip - can't calculate duration yet
+                durationText = stay.exitDate ? `${differenceInDays(parseISO(stay.exitDate), parseISO(stay.entryDate)) + 1} days planned` : 'Duration TBD'
+              } else if (isCurrentlyStaying) {
+                // Currently staying
+                duration = differenceInDays(today, parseISO(stay.entryDate)) + 1
+                durationText = `Day ${duration} (ongoing)`
+              } else if (stay.exitDate) {
+                // Past trip with exit date
+                duration = differenceInDays(parseISO(stay.exitDate), parseISO(stay.entryDate)) + 1
+                durationText = `${duration} days`
+              } else {
+                // Past trip without exit date (shouldn't happen but handle it)
+                durationText = 'No exit date recorded'
+              }
               
               return (
                 <div key={stay.id} className="p-4 hover:bg-gray-50 flex items-center justify-between">
@@ -114,6 +136,7 @@ export default function StaysList() {
                       )}
                       <p className="text-sm text-gray-600">
                         {stay.entryDate} ~ {stay.exitDate || 'Present'}
+                        <span className="ml-2 text-xs text-gray-500">({durationText})</span>
                       </p>
                     </div>
                   </div>

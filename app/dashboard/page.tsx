@@ -12,7 +12,6 @@ import StaysList from '@/components/StaysList'
 import StatsCards from '@/components/StatsCards'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/components/AuthProvider'
-import UserMenu from '@/components/UserMenu'
 
 export default function DashboardPage() {
   const { stays, loadStays, migrateFromLocalStorage, loading, initialLoad } = useSupabaseStore()
@@ -90,18 +89,15 @@ export default function DashboardPage() {
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-600 mt-1 md:mt-2 text-sm md:text-base">Track your visa status across countries</p>
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="flex-1 sm:flex-initial bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center text-sm md:text-base shadow-sm transition-colors"
-            >
-              <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              Add Stay Record
-            </button>
-            <UserMenu />
-          </div>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center text-sm md:text-base shadow-sm transition-colors"
+          >
+            <svg className="w-4 h-4 md:w-5 md:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Add Stay Record
+          </button>
         </div>
       </div>
 

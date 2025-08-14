@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/components/AuthProvider'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
@@ -15,6 +16,7 @@ export default function Sidebar() {
   const pathname = usePathname()
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { user, signOut } = useAuth()
 
   // Load collapsed state from localStorage
   useEffect(() => {
@@ -95,6 +97,39 @@ export default function Sidebar() {
           </h2>
           <p className={`text-sm text-gray-600 mt-1 ${isCollapsed ? 'md:hidden' : ''}`}>Visa Tracker</p>
         </div>
+
+        {/* User Profile Section */}
+        {user && (
+          <div className={`${isCollapsed ? 'md:px-3 px-6' : 'px-6'} mt-4 pb-4 border-b border-gray-200`}>
+            <div className={`flex items-center ${isCollapsed ? 'md:justify-center justify-start' : ''} gap-3`}>
+              {/* Avatar */}
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm flex-shrink-0">
+                {user.email?.charAt(0).toUpperCase() || 'U'}
+              </div>
+              
+              {/* User Info */}
+              {!isCollapsed && (
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900">Welcome back</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                </div>
+              )}
+            </div>
+            
+            {/* Sign Out Button */}
+            {!isCollapsed && (
+              <button
+                onClick={signOut}
+                className="mt-3 w-full text-left text-xs text-gray-500 hover:text-gray-700 flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Sign out
+              </button>
+            )}
+          </div>
+        )}
         
         <nav className="mt-6">
           {navigation.map((item) => {
