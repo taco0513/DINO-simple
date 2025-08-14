@@ -204,7 +204,15 @@ export default function ProfilePage() {
         code: error?.code,
         fullError: error
       })
-      const errorMessage = error?.message || error?.details || 'Failed to save profile. Please try again.'
+      let errorMessage = error?.message || error?.details || 'Failed to save profile. Please try again.'
+      
+      // Provide helpful error messages for common issues
+      if (errorMessage.includes('row-level security')) {
+        errorMessage = 'Permission denied. Please run the RLS migration (004_fix_profiles_rls.sql) in Supabase.'
+      } else if (errorMessage.includes('column')) {
+        errorMessage = 'Database schema mismatch. Please run migrations 003 and 004 in Supabase.'
+      }
+      
       setMessage({ type: 'error', text: errorMessage })
     } finally {
       setSaving(false)
