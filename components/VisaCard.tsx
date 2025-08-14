@@ -1,7 +1,7 @@
 import { VisaStatus, Stay } from '@/lib/types'
 import { useSupabaseStore } from '@/lib/supabase-store'
-import { visaRules } from '@/lib/visa-rules'
 import { useState } from 'react'
+import VisaDetailModal from './VisaDetailModal'
 
 interface VisaCardProps {
   status: VisaStatus
@@ -9,11 +9,9 @@ interface VisaCardProps {
 
 export default function VisaCard({ status }: VisaCardProps) {
   const stays = useSupabaseStore((state) => state.stays)
-  const [showInfo, setShowInfo] = useState(false)
+  const [showDetailModal, setShowDetailModal] = useState(false)
   const hasSpecialKoreaVisa = status.country.code === 'KR' && 
     stays.filter(s => s.countryCode === 'KR').some(s => s.visaType === '183/365')
-  
-  const visaRule = visaRules[status.country.code]
   
   const getStatusColor = () => {
     switch (status.status) {
@@ -36,15 +34,27 @@ export default function VisaCard({ status }: VisaCardProps) {
   }
 
   return (
+    <>
     <div className={`bg-white rounded-lg shadow p-6 border ${getBorderColor()}`}>
-      <div className="flex items-center mb-4">
-        <span className="text-3xl mr-3">{status.country.flag}</span>
-        <div>
-          <h3 className="text-lg font-semibold">{status.country.name}</h3>
-          {hasSpecialKoreaVisa && (
-            <span className="text-xs text-blue-600 font-medium">183/365 Special</span>
-          )}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <span className="text-3xl mr-3">{status.country.flag}</span>
+          <div>
+            <h3 className="text-lg font-semibold">{status.country.name}</h3>
+            {hasSpecialKoreaVisa && (
+              <span className="text-xs text-blue-600 font-medium">183/365 Special</span>
+            )}
+          </div>
         </div>
+        <button 
+          onClick={() => setShowDetailModal(true)}
+          className="text-gray-400 hover:text-blue-600 transition-colors p-1"
+          title="View detailed visa information"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
       </div>
 
       <div className="space-y-3">
@@ -123,56 +133,17 @@ export default function VisaCard({ status }: VisaCardProps) {
             {status.remainingDays <= 14 && ' ⚠️'}
           </span>
         </div>
-
-        {/* Reset Info Button */}
-        {visaRule?.resetInfo && (
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <button
-              onClick={() => setShowInfo(!showInfo)}
-              className="text-xs text-blue-600 hover:text-blue-700 flex items-center"
-            >
-              <svg 
-                className={`w-3 h-3 mr-1 transition-transform ${showInfo ? 'rotate-90' : ''}`} 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-              {visaRule.ruleType === 'rolling' ? 'How it works' : 'Reset info'}
-            </button>
-            
-            {showInfo && (
-              <div className="mt-2 p-3 bg-blue-50 rounded text-xs space-y-2">
-                <p className="text-gray-700">{visaRule.resetInfo}</p>
-                
-                {/* Source link and disclaimer */}
-                <div className="pt-2 border-t border-blue-100">
-                  {visaRule.sourceUrl && (
-                    <a 
-                      href={visaRule.sourceUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 underline flex items-center gap-1"
-                    >
-                      <span>Official Source</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  )}
-                  {visaRule.lastUpdated && (
-                    <p className="text-gray-500 mt-1">Last verified: {visaRule.lastUpdated}</p>
-                  )}
-                  <p className="text-gray-500 italic mt-1">
-                    ⚠️ Visa rules can change. Always verify with official sources before travel.
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
+    
+    {/* Detail Modal */}
+    {showDetailModal && (
+      <VisaDetailModal 
+        country={status.country}
+        onClose={() => setShowDetailModal(false)}
+        passportNationality="US" // TODO: Get from user profile
+      />
+    )}
+    </>
   )
 }

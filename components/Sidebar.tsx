@@ -10,6 +10,7 @@ const navigation = [
   { name: 'Calendar', href: '/dashboard/calendar', icon: '📅' },
   { name: 'Profile', href: '/dashboard/profile', icon: '👤' },
   { name: 'CSV File', href: '/dashboard/csv', icon: '📁' },
+  { name: 'Info', href: '/dashboard/info', icon: 'ℹ️' },
 ]
 
 export default function Sidebar() {
