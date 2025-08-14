@@ -1,8 +1,10 @@
 -- Fix RLS policies for profiles table
--- Drop existing policies first
+-- Drop ALL existing policies first (including any with different names)
 DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can create own profile" ON profiles;
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON profiles;
+DROP POLICY IF EXISTS "Users can delete own profile" ON profiles;
 
 -- Create comprehensive RLS policies
 -- Allow users to view their own profile
