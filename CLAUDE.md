@@ -119,9 +119,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 1. **Feedback System**: Comprehensive beta user feedback collection
    - Screenshot upload support (up to 5MB)
    - 4 feedback types: General, Bug, Feature, UI/UX
-   - Email delivery to hello@zimojin.com via Resend API
+   - Email delivery to zbrianjin@gmail.com via Resend API (free tier limitation)
    - 10-character minimum validation with real-time counter
    - Supabase storage integration for screenshots
+   - Note: Resend free tier only allows sending to account owner email
 
 2. **Security Enhancements**: Production-ready security measures
    - Row Level Security (RLS) policies on all tables
@@ -158,7 +159,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 # Try different feedback types: General, Bug, Feature, UI/UX
 # Upload screenshot (PNG, JPG up to 5MB)
 # Minimum 10 characters required for message
-# Email sent to hello@zimojin.com with screenshot attachment
+# Email sent to zbrianjin@gmail.com (Resend account owner email)
+# Note: Free tier only sends to account owner email
 ```
 
 ## Critical Files for Context

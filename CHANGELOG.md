@@ -12,9 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Screenshot upload support (PNG, JPG up to 5MB)
   - Four feedback categories: General, Bug, Feature, UI/UX  
   - Real-time character validation (minimum 10 characters)
-  - Email delivery to hello@zimojin.com via Resend API
+  - Email delivery to zbrianjin@gmail.com via Resend API (free tier limitation)
   - Supabase storage integration for screenshot management
   - Accessible via dashboard hamburger menu → "Send Feedback"
+  - Note: Using Resend account owner email due to free tier restrictions
 
 - **🛡️ Production Security Suite**: Enterprise-level security implementation
   - Row Level Security (RLS) policies on all database tables
