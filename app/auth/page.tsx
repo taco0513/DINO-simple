@@ -69,8 +69,8 @@ export default function AuthPage() {
               },
             }}
             theme="default"
-            providers={['google', 'github']}
-            redirectTo={`${process.env.NODE_ENV === 'production' ? 'https://dinoapp.net' : 'http://localhost:3000'}/dashboard`}
+            providers={[]}
+            redirectTo={`${process.env.NODE_ENV === 'production' ? 'https://dinoapp.net' : 'http://localhost:3004'}/dashboard`}
           />
         </div>
         
