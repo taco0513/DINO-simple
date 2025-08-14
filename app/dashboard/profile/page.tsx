@@ -11,9 +11,6 @@ interface Profile {
   passport_nationality: string | null
   passport_issue_date: string | null
   passport_expiry_date: string | null
-  emergency_contact_name: string | null
-  emergency_contact_phone: string | null
-  emergency_contact_relationship: string | null
   preferred_currency: string | null
   travel_insurance_provider: string | null
   travel_insurance_policy_number: string | null
@@ -33,14 +30,11 @@ const currencies = [
 export default function ProfilePage() {
   const { user } = useAuth()
   const { stays } = useSupabaseStore()
-  const [activeTab, setActiveTab] = useState<'passport' | 'security' | 'emergency' | 'preferences' | 'stats'>('passport')
+  const [activeTab, setActiveTab] = useState<'passport' | 'security' | 'preferences' | 'stats'>('passport')
   const [profile, setProfile] = useState<Profile>({
     passport_nationality: null,
     passport_issue_date: null,
     passport_expiry_date: null,
-    emergency_contact_name: null,
-    emergency_contact_phone: null,
-    emergency_contact_relationship: null,
     preferred_currency: 'USD',
     travel_insurance_provider: null,
     travel_insurance_policy_number: null,
@@ -104,11 +98,23 @@ export default function ProfilePage() {
         .eq('user_id', user.id)
         .single()
 
+      // Save all profile fields
+      const profileData = {
+        passport_nationality: profile.passport_nationality,
+        passport_issue_date: profile.passport_issue_date,
+        passport_expiry_date: profile.passport_expiry_date,
+        preferred_currency: profile.preferred_currency,
+        travel_insurance_provider: profile.travel_insurance_provider,
+        travel_insurance_policy_number: profile.travel_insurance_policy_number,
+        notification_days_before_visa_expiry: profile.notification_days_before_visa_expiry,
+        notification_days_before_passport_expiry: profile.notification_days_before_passport_expiry
+      }
+
       let error
       if (existingProfile) {
         const { error: updateError } = await supabase
           .from('profiles')
-          .update(profile)
+          .update(profileData)
           .eq('user_id', user.id)
         error = updateError
       } else {
@@ -116,7 +122,7 @@ export default function ProfilePage() {
           .from('profiles')
           .insert({
             user_id: user.id,
-            ...profile
+            ...profileData
           })
         error = insertError
       }
@@ -206,7 +212,6 @@ export default function ProfilePage() {
   const tabs = [
     { id: 'passport', label: 'Passport', icon: '📔' },
     { id: 'security', label: 'Security', icon: '🔐' },
-    { id: 'emergency', label: 'Emergency', icon: '🚨' },
     { id: 'preferences', label: 'Preferences', icon: '⚙️' },
     { id: 'stats', label: 'Stats', icon: '📊' },
   ]
@@ -366,55 +371,31 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {/* Emergency Tab */}
-              {activeTab === 'emergency' && (
+              {/* Preferences Tab */}
+              {activeTab === 'preferences' && (
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold mb-4">Emergency Contact</h2>
+                  <h2 className="text-lg font-semibold mb-4">Travel Preferences</h2>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Contact Name
+                      Preferred Currency
                     </label>
-                    <input
-                      type="text"
-                      value={profile.emergency_contact_name || ''}
-                      onChange={(e) => setProfile({ ...profile, emergency_contact_name: e.target.value })}
+                    <select
+                      value={profile.preferred_currency || 'USD'}
+                      onChange={(e) => setProfile({ ...profile, preferred_currency: e.target.value })}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      placeholder="Emergency contact name"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone Number
-                      </label>
-                      <input
-                        type="tel"
-                        value={profile.emergency_contact_phone || ''}
-                        onChange={(e) => setProfile({ ...profile, emergency_contact_phone: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="+1 234 567 8900"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Relationship
-                      </label>
-                      <input
-                        type="text"
-                        value={profile.emergency_contact_relationship || ''}
-                        onChange={(e) => setProfile({ ...profile, emergency_contact_relationship: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="e.g. Spouse, Parent, Friend"
-                      />
-                    </div>
+                    >
+                      {currencies.map(currency => (
+                        <option key={currency.code} value={currency.code}>
+                          {currency.symbol} {currency.code} - {currency.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="border-t pt-4">
                     <h3 className="text-sm font-semibold text-gray-700 mb-3">Travel Insurance</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Insurance Provider
@@ -440,30 +421,6 @@ export default function ProfilePage() {
                         />
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Preferences Tab */}
-              {activeTab === 'preferences' && (
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold mb-4">Travel Preferences</h2>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Preferred Currency
-                    </label>
-                    <select
-                      value={profile.preferred_currency || 'USD'}
-                      onChange={(e) => setProfile({ ...profile, preferred_currency: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      {currencies.map(currency => (
-                        <option key={currency.code} value={currency.code}>
-                          {currency.symbol} {currency.code} - {currency.name}
-                        </option>
-                      ))}
-                    </select>
                   </div>
 
                   <div className="border-t pt-4">
