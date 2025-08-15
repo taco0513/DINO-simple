@@ -43,42 +43,55 @@ export default function CountrySelect({ value, onChange, required, placeholder =
     <div className="relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer bg-white"
+        className="w-full h-12 px-4 text-16px border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer bg-white flex items-center justify-between"
       >
-        {selectedCountry ? (
-          <span>{selectedCountry.flag} {selectedCountry.name}</span>
-        ) : (
-          <span className="text-gray-500">{placeholder}</span>
-        )}
+        <span>
+          {selectedCountry ? (
+            <span>{selectedCountry.flag} {selectedCountry.name}</span>
+          ) : (
+            <span className="text-gray-500">{placeholder}</span>
+          )}
+        </span>
+        <svg 
+          className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
       </div>
       
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-hidden">
-          <div className="p-2 border-b">
+        <div className="absolute z-20 w-full mt-2 bg-white border border-gray-300 rounded-lg shadow-xl max-h-72 overflow-hidden">
+          <div className="p-3 border-b border-gray-200">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Type to search..."
-              className="w-full px-2 py-1 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="Type to search countries..."
+              className="w-full h-10 px-3 text-16px border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               autoFocus
             />
           </div>
-          <div className="overflow-y-auto max-h-48">
+          <div className="overflow-y-auto max-h-56">
             {filteredCountries.length > 0 ? (
               filteredCountries.map((country) => (
                 <div
                   key={country.code}
                   onClick={() => handleSelect(country.code)}
-                  className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${
-                    country.code === value ? 'bg-blue-50' : ''
+                  className={`px-4 py-3 hover:bg-gray-100 cursor-pointer transition-colors min-h-[44px] flex items-center ${
+                    country.code === value ? 'bg-blue-50 text-blue-900' : ''
                   }`}
                 >
-                  {country.flag} {country.name}
+                  <span className="text-lg mr-3">{country.flag}</span>
+                  <span className="text-16px">{country.name}</span>
                 </div>
               ))
             ) : (
-              <div className="px-3 py-2 text-gray-500">No countries found</div>
+              <div className="px-4 py-6 text-gray-500 text-center">
+                No countries found matching "{search}"
+              </div>
             )}
           </div>
         </div>

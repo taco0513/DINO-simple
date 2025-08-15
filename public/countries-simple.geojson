@@ -1,0 +1,200 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "US",
+        "NAME": "United States of America"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-125, 50], [-125, 25], [-65, 25], [-65, 50], [-125, 50]
+        ]]
+      }
+    },
+    {
+      "type": "Feature", 
+      "properties": {
+        "ISO_A2": "CN",
+        "NAME": "China"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [75, 55], [135, 55], [135, 15], [75, 15], [75, 55]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "JP", 
+        "NAME": "Japan"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [129, 46], [146, 46], [146, 30], [129, 30], [129, 46]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "KR",
+        "NAME": "South Korea"  
+      },
+      "geometry": {
+        "type": "Polygon", 
+        "coordinates": [[
+          [124, 39], [130, 39], [130, 33], [124, 33], [124, 39]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "GB",
+        "NAME": "United Kingdom"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-8, 61], [2, 61], [2, 49], [-8, 49], [-8, 61]
+        ]]
+      }
+    },
+    {
+      "type": "Feature", 
+      "properties": {
+        "ISO_A2": "FR",
+        "NAME": "France"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-5, 51], [8, 51], [8, 42], [-5, 42], [-5, 51]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "DE", 
+        "NAME": "Germany"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [5, 55], [15, 55], [15, 47], [5, 47], [5, 55]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "TH",
+        "NAME": "Thailand"
+      },
+      "geometry": {
+        "type": "Polygon", 
+        "coordinates": [[
+          [97, 21], [106, 21], [106, 5], [97, 5], [97, 21]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "VN",
+        "NAME": "Vietnam"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [102, 24], [110, 24], [110, 8], [102, 8], [102, 24]
+        ]]
+      }
+    },
+    {
+      "type": "Feature", 
+      "properties": {
+        "ISO_A2": "SG",
+        "NAME": "Singapore"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [103.6, 1.5], [104.0, 1.5], [104.0, 1.1], [103.6, 1.1], [103.6, 1.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "AU",
+        "NAME": "Australia"
+      },
+      "geometry": {
+        "type": "Polygon", 
+        "coordinates": [[
+          [112, -10], [154, -10], [154, -44], [112, -44], [112, -10]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "CA",
+        "NAME": "Canada"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-140, 70], [-50, 70], [-50, 42], [-140, 42], [-140, 70]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "BR", 
+        "NAME": "Brazil"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-74, 5], [-34, 5], [-34, -34], [-74, -34], [-74, 5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "IN",
+        "NAME": "India"
+      },
+      "geometry": {
+        "type": "Polygon", 
+        "coordinates": [[
+          [68, 37], [97, 37], [97, 6], [68, 6], [68, 37]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "ISO_A2": "IT",
+        "NAME": "Italy"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [6, 47], [19, 47], [19, 36], [6, 36], [6, 47]
+        ]]
+      }
+    }
+  ]
+}

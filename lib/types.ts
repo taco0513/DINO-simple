@@ -1,8 +1,21 @@
 export interface Country {
-  code: string
+  code: string // ISO 3166-1 alpha-2
   name: string
   flag: string
   color: string
+  visa?: {
+    maxDays: number // Maximum days allowed
+    ruleType: 'rolling' | 'reset' | 'annual' // Rolling window, resets on exit, or annual
+    periodDays?: number // Period for rolling window (e.g., 180 days)
+    requiresVisa?: boolean // If visa required in advance
+    eVisa?: boolean // If e-visa is available
+    visaOnArrival?: boolean // If visa on arrival is available
+    eta?: boolean // If ETA/ESTA required
+    info?: string // Additional visa info
+    resetInfo?: string // Information about how the visa resets
+    sourceUrl?: string // Official source for visa information
+    lastUpdated?: string // When the information was last verified
+  }
 }
 
 export interface Stay {

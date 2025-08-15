@@ -67,22 +67,14 @@ export default function VisaCard({ status }: VisaCardProps) {
             {/* Current/Past days bar */}
             {status.currentDays !== undefined && status.currentDays > 0 && (
               <div
-                className={`h-2 absolute left-0 top-0 rounded-l-full ${
-                  status.status === 'danger' ? 'bg-red-500' :
-                  status.status === 'warning' ? 'bg-yellow-500' :
-                  'bg-green-500'
-                }`}
+                className="h-2 absolute left-0 top-0 rounded-l-full bg-blue-500"
                 style={{ width: `${Math.min(100, (status.currentDays / status.maxDays) * 100)}%` }}
               />
             )}
             {/* Planned/Future days bar */}
             {status.plannedDays !== undefined && status.plannedDays > 0 && (
               <div
-                className={`h-2 absolute top-0 rounded-r-full ${
-                  status.status === 'danger' ? 'bg-red-300' :
-                  status.status === 'warning' ? 'bg-yellow-300' :
-                  'bg-green-300'
-                }`}
+                className="h-2 absolute top-0 rounded-r-full bg-blue-300"
                 style={{ 
                   width: `${Math.min(100 - ((status.currentDays || 0) / status.maxDays * 100), (status.plannedDays / status.maxDays * 100))}%`,
                   left: `${Math.min(100, ((status.currentDays || 0) / status.maxDays) * 100)}%`
@@ -92,7 +84,7 @@ export default function VisaCard({ status }: VisaCardProps) {
             {/* Fallback for backward compatibility */}
             {status.currentDays === undefined && (
               <div
-                className={`h-2 rounded-full ${getStatusColor()}`}
+                className="h-2 rounded-full bg-blue-500"
                 style={{ width: `${Math.min(100, status.percentage)}%` }}
               />
             )}
@@ -101,20 +93,12 @@ export default function VisaCard({ status }: VisaCardProps) {
           {status.currentDays !== undefined && (
             <div className="flex items-center gap-4 mt-2">
               <div className="flex items-center gap-1">
-                <div className={`w-3 h-3 rounded ${
-                  status.status === 'danger' ? 'bg-red-500' :
-                  status.status === 'warning' ? 'bg-yellow-500' :
-                  'bg-green-500'
-                }`}></div>
+                <div className="w-3 h-3 rounded bg-blue-500"></div>
                 <span className="text-xs text-gray-600">Current ({status.currentDays || 0} days)</span>
               </div>
               {status.plannedDays !== undefined && status.plannedDays > 0 && (
                 <div className="flex items-center gap-1">
-                  <div className={`w-3 h-3 rounded ${
-                    status.status === 'danger' ? 'bg-red-300' :
-                    status.status === 'warning' ? 'bg-yellow-300' :
-                    'bg-green-300'
-                  }`}></div>
+                  <div className="w-3 h-3 rounded bg-blue-300"></div>
                   <span className="text-xs text-gray-600">Planned ({status.plannedDays} days)</span>
                 </div>
               )}

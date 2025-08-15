@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { Stay } from './types'
 import { supabase } from './supabase'
 import { resolveStayOverlaps, resolveAllOverlaps } from './overlap-handler'
+import toast from 'react-hot-toast'
 
 interface SupabaseStoreState {
   stays: Stay[]
@@ -22,6 +23,8 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
   lastLoadTime: null,
   
   addStay: async (stayData) => {
+    const loadingToast = toast.loading('Adding stay record...')
+    
     try {
       set({ loading: true })
       
@@ -39,10 +42,13 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
       const newStay = resolvedStays.find(s => s.id === stay.id)!
 
       // Insert into Supabase
-      const { error } = await supabase
+      // MUST provide ID - it's a required TEXT field with no default
+      const stayId = newStay.id || crypto.randomUUID()
+      
+      const { data: insertedStay, error } = await supabase
         .from('stays')
         .insert({
-          id: newStay.id,
+          id: stayId,  // Required - text primary key
           user_id: user.id,
           country_code: newStay.countryCode,
           city: newStay.city,
@@ -53,11 +59,35 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
           visa_type: newStay.visaType || 'visa-free',
           notes: newStay.notes,
         })
+        .select()
+        .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase insert error:', error)
+        console.error('Data attempted to insert:', {
+          id: stayId,
+          user_id: user.id,
+          country_code: newStay.countryCode,
+          city: newStay.city,
+          entry_date: newStay.entryDate,
+          exit_date: newStay.exitDate,
+        })
+        throw error
+      }
+
+      // Use the stayId we provided since we're inserting with a specific ID
+      const insertedStayWithId = {
+        ...newStay,
+        id: stayId,
+      }
+
+      // Update the resolvedStays array with the correct ID
+      const finalStays = resolvedStays.map(s => 
+        s.id === stay.id ? insertedStayWithId : s
+      )
 
       // Update any other stays that were modified by overlap resolution
-      const otherStays = resolvedStays.filter(s => s.id !== stay.id && currentStays.some(cs => cs.id === s.id))
+      const otherStays = finalStays.filter(s => s.id !== stayId && currentStays.some(cs => cs.id === s.id))
       for (const modifiedStay of otherStays) {
         if (currentStays.find(cs => cs.id === modifiedStay.id && cs.exitDate !== modifiedStay.exitDate)) {
           await supabase
@@ -71,15 +101,20 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
         }
       }
 
-      set({ stays: resolvedStays })
+      set({ stays: finalStays })
+      toast.success('Stay record added successfully!', { id: loadingToast })
     } catch (error) {
       console.error('Error adding stay:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to add stay record', { id: loadingToast })
+      throw error
     } finally {
       set({ loading: false })
     }
   },
   
   updateStay: async (id, updatedStay) => {
+    const loadingToast = toast.loading('Updating stay record...')
+    
     try {
       set({ loading: true })
       
@@ -104,14 +139,19 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
           s.id === id ? { ...s, ...updatedStay } : s
         )
       }))
+      toast.success('Stay record updated successfully!', { id: loadingToast })
     } catch (error) {
       console.error('Error updating stay:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to update stay record', { id: loadingToast })
+      throw error
     } finally {
       set({ loading: false })
     }
   },
   
   deleteStay: async (id) => {
+    const loadingToast = toast.loading('Deleting stay record...')
+    
     try {
       set({ loading: true })
       
@@ -125,8 +165,11 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
       set(state => ({
         stays: state.stays.filter(s => s.id !== id)
       }))
+      toast.success('Stay record deleted successfully!', { id: loadingToast })
     } catch (error) {
       console.error('Error deleting stay:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to delete stay record', { id: loadingToast })
+      throw error
     } finally {
       set({ loading: false })
     }
@@ -172,6 +215,7 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
       set({ stays, initialLoad: true, lastLoadTime: Date.now() })
     } catch (error) {
       console.error('Error loading stays:', error)
+      toast.error('Failed to load travel records')
     } finally {
       set({ loading: false })
     }
@@ -232,6 +276,7 @@ export const useSupabaseStore = create<SupabaseStoreState>((set, get) => ({
       localStorage.removeItem('dino-stays')
       
       console.log(`Successfully migrated ${localStays.length} stays to Supabase`)
+      toast.success(`Successfully migrated ${localStays.length} travel records!`)
     } catch (error) {
       console.error('Error during migration:', error)
     }
