@@ -117,8 +117,8 @@ export default function ProfilePage() {
         notification_days_before_passport_expiry: profile.notification_days_before_passport_expiry || 180
       }
 
-      // Try with full data first, fall back to safe data if it fails
-      let dataToSave = fullData
+      // Try with full data first, fall back to safe data if it fails  
+      let dataToSave: typeof fullData | typeof safeData = fullData
       let error: any = null
 
       if (!existingProfile && fetchError?.code === 'PGRST116') {

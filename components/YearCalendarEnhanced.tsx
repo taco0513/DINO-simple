@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Stay } from '@/lib/types'
 import { 
   format, 
   startOfYear, 
@@ -19,7 +20,6 @@ import {
   addMonths,
   subMonths
 } from 'date-fns'
-import { Stay } from '@/lib/types'
 import { countries } from '@/lib/countries'
 import { calculateVisaStatus } from '@/lib/visa-calculator'
 import { visaRules } from '@/lib/visa-rules'
@@ -147,7 +147,7 @@ export default function YearCalendarEnhanced({
       const dayStays = getStaysForDate(day)
       if (dayStays.length > 0) {
         travelDays++
-        dayStays.forEach(stay => countriesInMonth.add(stay.countryCode))
+        dayStays.forEach((stay: Stay) => countriesInMonth.add(stay.countryCode))
       }
     })
     
@@ -265,7 +265,7 @@ export default function YearCalendarEnhanced({
       const dayStays = getStaysForDate(day)
       if (dayStays.length > 0) {
         travelDays++
-        dayStays.forEach(stay => {
+        dayStays.forEach((stay: Stay) => {
           countriesSet.add(stay.countryCode)
           if (stay.city) citiesSet.add(stay.city)
         })
