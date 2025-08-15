@@ -7,7 +7,7 @@ export const APP_CONFIG = {
   // Data verification dates
   dataVerification: {
     // When DINO last verified visa information from official sources
-    lastChecked: '2024-11-01',
+    lastChecked: '2025-01-14',
     // When the visa rules database was last comprehensively updated
     lastUpdated: '2024-11',
   },
