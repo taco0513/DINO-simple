@@ -5,7 +5,28 @@ All notable changes to DINO (Digital Nomad Visa Tracker) will be documented in t
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.1] - 2025-08-15
+## [6.5.2-beta] - 2025-08-15
+
+### Added
+- **Visa Sources Library**: Comprehensive tracking system for visa information sources
+  - Database of 40+ official visa sources with metadata
+  - Track when sources were last checked by DINO
+  - Track when official sources were last updated
+  - Verification status tracking (verified, needs-update, outdated, pending)
+  - Source management page at `/dashboard/sources`
+  - Search and filter capabilities
+  - Statistics dashboard showing source health
+  - Version history tracking system
+- **Info text for visa card filtering**: Added explanation for auto-hide behavior
+
+### Changed
+- Added "Sources" link to sidebar navigation with search icon (🔍)
+- Updated terminology: "Source updated" vs "DINO verified" for clarity
+
+### Fixed
+- Fixed version numbering consistency (back to 6.x.x-beta)
+
+## [6.5.1-beta] - 2025-08-15
 
 ### Added
 - **Airport Code Recognition**: Automatic city name detection from IATA codes

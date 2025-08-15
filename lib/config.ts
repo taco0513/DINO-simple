@@ -2,7 +2,7 @@
 
 export const APP_CONFIG = {
   // Version information
-  version: '1.4.1',
+  version: '6.5.2-beta',
   
   // Data verification dates
   dataVerification: {

@@ -9,6 +9,29 @@ export default function InfoPage() {
   
   const recentUpdates = [
     {
+      date: "2025-08-15",
+      version: "v6.5.2-beta",
+      changes: [
+        "✨ Visa Sources Library - Track official visa information sources",
+        "✨ Source verification status tracking system",
+        "✨ Sources management dashboard with search/filter",
+        "📊 Statistics for source health monitoring",
+        "🔍 Added Sources page to navigation menu",
+        "ℹ️ Added visa card filtering explanation",
+        "🐛 Fixed version numbering consistency"
+      ]
+    },
+    {
+      date: "2025-08-15",
+      version: "v6.5.1-beta",
+      changes: [
+        "✨ Airport code recognition with 300+ airports",
+        "✨ Auto-populate city names from IATA codes",
+        "✨ Display both 'DINO verified' and 'Source updated' dates",
+        "🐛 Fixed pagination duplication issue"
+      ]
+    },
+    {
       date: "2025-08-14",
       version: "v6.5.0-beta",
       changes: [
@@ -79,8 +102,8 @@ export default function InfoPage() {
               v{version}
             </span>
             <div className="text-sm text-gray-500">
-              <div>Last DINO checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</div>
-              <div>Last updated: {lastUpdated}</div>
+              <div>DINO verified: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</div>
+              <div>Sources updated: {lastUpdated}</div>
             </div>
           </div>
         </div>

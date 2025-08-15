@@ -11,6 +11,7 @@ const navigation = [
   { name: 'Calendar', href: '/dashboard/calendar', icon: '📅' },
   { name: 'Profile', href: '/dashboard/profile', icon: '👤' },
   { name: 'CSV File', href: '/dashboard/csv', icon: '📁' },
+  { name: 'Sources', href: '/dashboard/sources', icon: '🔍' },
   { name: 'Info', href: '/dashboard/info', icon: 'ℹ️' },
 ]
 

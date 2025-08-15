@@ -256,7 +256,17 @@ export default function DashboardPage() {
           
           {/* Visa Status Section */}
           <section>
-            <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Visa Status by Country</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+              <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Visa Status by Country</h2>
+              <p className="text-xs text-gray-400 mt-1 sm:mt-0">
+                <span className="inline-flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Cards auto-hide: reset visas after 7 days, others after 1 year
+                </span>
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {visaStatuses.map((status) => (
                 <VisaCard key={status.country.code} status={status} />
