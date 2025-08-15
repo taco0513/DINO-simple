@@ -80,7 +80,7 @@ export default function InfoPage() {
             </span>
             <div className="text-sm text-gray-500">
               <div>Last updated: {lastUpdated}</div>
-              <div>Last we checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</div>
+              <div>Last DINO checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</div>
             </div>
           </div>
         </div>

@@ -182,7 +182,7 @@ export default function VisaDetailModal({ country, onClose, passportNationality 
                 {rule.lastUpdated && (
                   <p>Last updated: {formatLastCheckedDate(rule.lastUpdated)}</p>
                 )}
-                <p>Last we checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</p>
+                <p>Last DINO checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</p>
                 {rule.sourceUrl && (
                   <a
                     href={rule.sourceUrl}
