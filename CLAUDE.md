@@ -106,7 +106,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 ## Known Issues & Solutions
 
 ### Latest Updates (2025.08.15) - Version 6.5.3-beta
-1. **Calendar Improvements**: Enhanced calendar visualization with mobile responsiveness
+1. **Dashboard Statistics Enhancement**: Improved stats cards with better prioritization
+   - Added "Cities Visited" stat showing unique cities from travel records
+   - Reordered stats for better user experience: Current Stay → 2025 Travel → Countries → Cities
+   - Responsive 4-column layout (1 → 2 → 4 cols on mobile → tablet → desktop)
+   - Enhanced grid system with consistent spacing and visual hierarchy
+
+2. **Calendar Improvements**: Enhanced calendar visualization with mobile responsiveness
    - Mobile-responsive sizing with larger touch targets for mobile devices
    - Optimized grid layouts and improved hover states
    - Clean, minimal design with consistent travel day indicators
@@ -114,7 +120,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
    - Simple slate-colored circles for all travel days
    - Responsive legend with clear visual indicators
 
-2. **Airport Code Recognition**: Automatic city name detection from IATA codes
+3. **Airport Code Recognition**: Automatic city name detection from IATA codes
    - Database of 300+ major international airports
    - Auto-populate city names when entering airport codes (e.g., ICN → Seoul)
    - Auto-select country when airport code is recognized

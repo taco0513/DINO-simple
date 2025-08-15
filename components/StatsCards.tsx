@@ -76,39 +76,6 @@ export default function StatsCards() {
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-      {/* 방문 국가 수 */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs md:text-sm text-gray-600">Countries Visited</p>
-            <p className="text-lg md:text-2xl font-bold">{visitedCountries} countries</p>
-          </div>
-          <div className="text-xl md:text-3xl opacity-50">🌍</div>
-        </div>
-      </div>
-      
-      {/* Days traveled this year */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs md:text-sm text-gray-600">{currentYear} Travel</p>
-            <p className="text-lg md:text-2xl font-bold">{thisYearDays} days</p>
-          </div>
-          <div className="text-xl md:text-3xl opacity-50">📅</div>
-        </div>
-      </div>
-      
-      {/* Cities visited */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs md:text-sm text-gray-600">Cities Visited</p>
-            <p className="text-lg md:text-2xl font-bold">{visitedCities} cities</p>
-          </div>
-          <div className="text-xl md:text-3xl opacity-50">🏙️</div>
-        </div>
-      </div>
-      
       {/* Currently staying */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
         <div className="flex items-center justify-between">
@@ -126,6 +93,39 @@ export default function StatsCards() {
             )}
           </div>
           <div className="text-xl md:text-3xl opacity-50">📍</div>
+        </div>
+      </div>
+      
+      {/* Days traveled this year */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs md:text-sm text-gray-600">{currentYear} Travel</p>
+            <p className="text-lg md:text-2xl font-bold">{thisYearDays} days</p>
+          </div>
+          <div className="text-xl md:text-3xl opacity-50">📅</div>
+        </div>
+      </div>
+      
+      {/* 방문 국가 수 */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs md:text-sm text-gray-600">Countries Visited</p>
+            <p className="text-lg md:text-2xl font-bold">{visitedCountries} countries</p>
+          </div>
+          <div className="text-xl md:text-3xl opacity-50">🌍</div>
+        </div>
+      </div>
+      
+      {/* Cities visited */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs md:text-sm text-gray-600">Cities Visited</p>
+            <p className="text-lg md:text-2xl font-bold">{visitedCities} cities</p>
+          </div>
+          <div className="text-xl md:text-3xl opacity-50">🏙️</div>
         </div>
       </div>
     </div>
