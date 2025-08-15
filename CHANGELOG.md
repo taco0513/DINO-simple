@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Visual indicator showing recognized airport information
   - Support for both "From" and "To" city fields
   - Uppercase conversion for consistent code entry
+  - Travel History list now displays city names alongside airport codes
 
 ### Fixed
 - Pagination duplication issue where page 4 appeared twice in StaysList

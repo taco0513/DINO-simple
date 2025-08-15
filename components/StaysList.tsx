@@ -6,6 +6,7 @@ import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
 import EditStayModal from './EditStayModal'
 import { differenceInDays, parseISO } from 'date-fns'
+import { findAirportByCode, isLikelyAirportCode } from '@/lib/airport-codes'
 
 export default function StaysList() {
   const { stays, deleteStay } = useSupabaseStore()
@@ -18,6 +19,26 @@ export default function StaysList() {
     if (confirm('Are you sure you want to delete this?')) {
       await deleteStay(id)
     }
+  }
+
+  // Helper function to format city display with airport code recognition
+  const formatCityDisplay = (city: string | undefined): string => {
+    if (!city) return ''
+    
+    // If it already has the format "City (CODE)", return as is
+    if (city.includes('(') && city.includes(')')) {
+      return city
+    }
+    
+    // Check if it's an airport code
+    if (isLikelyAirportCode(city)) {
+      const airport = findAirportByCode(city)
+      if (airport) {
+        return `${airport.city} (${city})`
+      }
+    }
+    
+    return city
   }
 
   // Get unique countries from stays
@@ -135,7 +156,7 @@ export default function StaysList() {
                           <h3 className="font-medium text-gray-900 leading-tight">
                             {country?.name}
                             {stay.city && (
-                              <span className="text-gray-600 text-sm block mt-0.5">{stay.city}</span>
+                              <span className="text-gray-600 text-sm block mt-0.5">{formatCityDisplay(stay.city)}</span>
                             )}
                           </h3>
                         </div>
@@ -160,7 +181,7 @@ export default function StaysList() {
                           <span className="text-base mr-1">{fromCountry.flag}</span>
                           <span className="truncate">
                             {fromCountry.name}
-                            {stay.fromCity && <span> ({stay.fromCity})</span>}
+                            {stay.fromCity && <span> ({formatCityDisplay(stay.fromCity)})</span>}
                           </span>
                         </div>
                       )}
@@ -199,7 +220,7 @@ export default function StaysList() {
                         <div className="flex items-center flex-wrap gap-2">
                           <p className="font-medium">
                             {country?.name}
-                            {stay.city && <span className="text-gray-600"> ({stay.city})</span>}
+                            {stay.city && <span className="text-gray-600"> ({formatCityDisplay(stay.city)})</span>}
                           </p>
                           {isCurrentlyStaying && (
                             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
@@ -215,7 +236,7 @@ export default function StaysList() {
                         {fromCountry && (
                           <p className="text-xs text-gray-500 mt-1">
                             From: {fromCountry.flag} {fromCountry.name}
-                            {stay.fromCity && <span> ({stay.fromCity})</span>}
+                            {stay.fromCity && <span> ({formatCityDisplay(stay.fromCity)})</span>}
                           </p>
                         )}
                         <p className="text-sm text-gray-600 mt-1">

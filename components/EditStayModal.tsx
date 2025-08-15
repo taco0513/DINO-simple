@@ -66,11 +66,29 @@ export default function EditStayModal({ stay, onClose }: EditStayModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Process city fields - if it's an airport code, save the city name
+    let processedCity = formData.city
+    let processedFromCity = formData.fromCity
+    
+    if (processedCity && isLikelyAirportCode(processedCity)) {
+      const airport = findAirportByCode(processedCity)
+      if (airport) {
+        processedCity = `${airport.city} (${processedCity})`
+      }
+    }
+    
+    if (processedFromCity && isLikelyAirportCode(processedFromCity)) {
+      const airport = findAirportByCode(processedFromCity)
+      if (airport) {
+        processedFromCity = `${airport.city} (${processedFromCity})`
+      }
+    }
+    
     const updateData = {
       countryCode: formData.countryCode,
-      city: formData.city || undefined,
+      city: processedCity || undefined,
       fromCountryCode: formData.fromCountryCode || undefined,
-      fromCity: formData.fromCity || undefined,
+      fromCity: processedFromCity || undefined,
       entryDate: formData.entryDate,
       exitDate: formData.exitDate || undefined,
       visaType: formData.visaType,

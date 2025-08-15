@@ -63,13 +63,31 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Process city fields - if it's an airport code, save the city name
+    let processedCity = formData.city
+    let processedFromCity = formData.fromCity
+    
+    if (processedCity && isLikelyAirportCode(processedCity)) {
+      const airport = findAirportByCode(processedCity)
+      if (airport) {
+        processedCity = `${airport.city} (${processedCity})`
+      }
+    }
+    
+    if (processedFromCity && isLikelyAirportCode(processedFromCity)) {
+      const airport = findAirportByCode(processedFromCity)
+      if (airport) {
+        processedFromCity = `${airport.city} (${processedFromCity})`
+      }
+    }
+    
     // Generate unique ID with timestamp + random number
     const newStay = {
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       countryCode: formData.countryCode,
-      city: formData.city || undefined,
+      city: processedCity || undefined,
       fromCountryCode: formData.fromCountryCode || undefined,
-      fromCity: formData.fromCity || undefined,
+      fromCity: processedFromCity || undefined,
       entryDate: formData.entryDate,
       exitDate: formData.exitDate || undefined,
       visaType: formData.visaType || 'visa-free',
