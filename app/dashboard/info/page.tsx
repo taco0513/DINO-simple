@@ -1,10 +1,11 @@
 'use client'
 
 import ProtectedRoute from '@/components/ProtectedRoute'
+import { APP_CONFIG, formatDateForDisplay } from '@/lib/config'
 
 export default function InfoPage() {
-  const version = "v6.5.0-beta"
-  const lastUpdated = "2025-08-14"
+  const version = APP_CONFIG.version
+  const lastUpdated = APP_CONFIG.dataVerification.lastUpdated
   
   const recentUpdates = [
     {
@@ -75,11 +76,12 @@ export default function InfoPage() {
           <p className="text-gray-600">Digital Nomad Visa Tracker</p>
           <div className="flex items-center gap-4 mt-4">
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-              {version}
+              v{version}
             </span>
-            <span className="text-sm text-gray-500">
-              Last we checked: {lastUpdated}
-            </span>
+            <div className="text-sm text-gray-500">
+              <div>Last updated: {lastUpdated}</div>
+              <div>Last we checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</div>
+            </div>
           </div>
         </div>
 

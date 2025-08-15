@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { ExtendedVisaRule, visaRulesForUSPassport, visaRulesForKoreanPassport } from '@/lib/visa-rules-extended'
 import { Country } from '@/lib/types'
+import { APP_CONFIG, formatDateForDisplay } from '@/lib/config'
 
 interface VisaDetailModalProps {
   country: Country
@@ -177,10 +178,11 @@ export default function VisaDetailModal({ country, onClose, passportNationality 
               </div>
               
               {/* Source and Update Info */}
-              <div className="text-xs text-gray-500 pt-2 border-t">
+              <div className="text-xs text-gray-500 pt-2 border-t space-y-1">
                 {rule.lastUpdated && (
-                  <p>Last we checked: {formatLastCheckedDate(rule.lastUpdated)}</p>
+                  <p>Last updated: {formatLastCheckedDate(rule.lastUpdated)}</p>
                 )}
+                <p>Last we checked: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</p>
                 {rule.sourceUrl && (
                   <a
                     href={rule.sourceUrl}

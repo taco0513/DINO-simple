@@ -18,8 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Travel History list now displays city names alongside airport codes
 
 ### Changed
-- Updated date display format to "Last we checked" for better user experience
+- Enhanced date display to show both "Last updated" and "Last we checked" dates
+  - "Last updated" shows when official visa rules were issued
+  - "Last we checked" shows when DINO verified the information
 - Visa information modal now shows friendly date format (e.g., "November 2024")
+- Created centralized configuration file for app metadata
 
 ### Fixed
 - Pagination duplication issue where page 4 appeared twice in StaysList
