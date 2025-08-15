@@ -25,8 +25,12 @@ export default function StaysList() {
   const formatCityDisplay = (city: string | undefined): string => {
     if (!city) return ''
     
-    // If it already has the format "City (CODE)", return as is
+    // If it already has the format "City (CODE)", return as is but ensure CODE is uppercase
     if (city.includes('(') && city.includes(')')) {
+      const match = city.match(/^(.+)\s\(([^)]+)\)$/)
+      if (match && isLikelyAirportCode(match[2])) {
+        return `${match[1]} (${match[2].toUpperCase()})`
+      }
       return city
     }
     
@@ -34,7 +38,7 @@ export default function StaysList() {
     if (isLikelyAirportCode(city)) {
       const airport = findAirportByCode(city)
       if (airport) {
-        return `${airport.city} (${city})`
+        return `${airport.city} (${city.toUpperCase()})`
       }
     }
     

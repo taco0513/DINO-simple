@@ -70,14 +70,14 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
     if (processedCity && isLikelyAirportCode(processedCity)) {
       const airport = findAirportByCode(processedCity)
       if (airport) {
-        processedCity = `${airport.city} (${processedCity})`
+        processedCity = `${airport.city} (${processedCity.toUpperCase()})`
       }
     }
     
     if (processedFromCity && isLikelyAirportCode(processedFromCity)) {
       const airport = findAirportByCode(processedFromCity)
       if (airport) {
-        processedFromCity = `${airport.city} (${processedFromCity})`
+        processedFromCity = `${airport.city} (${processedFromCity.toUpperCase()})`
       }
     }
     
