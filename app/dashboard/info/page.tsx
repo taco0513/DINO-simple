@@ -1,15 +1,26 @@
 'use client'
 
 import ProtectedRoute from '@/components/ProtectedRoute'
-import { APP_CONFIG, formatDateForDisplay } from '@/lib/config'
+import { APP_CONFIG } from '@/lib/config'
 
 export default function InfoPage() {
   const version = APP_CONFIG.version
-  const lastUpdated = APP_CONFIG.dataVerification.lastUpdated
   
   const recentUpdates = [
     {
-      date: "2025-08-15",
+      datetime: "2025-08-15 17:00 KST",
+      version: "v6.5.3-beta",
+      changes: [
+        "✨ Calendar mobile responsiveness improvements",
+        "✨ Optimized touch targets for mobile devices",
+        "📱 Enhanced mobile calendar grid layouts",
+        "🎨 Simplified calendar design with consistent indicators",
+        "📖 Updated project documentation (CLAUDE.md)",
+        "🐛 Improved calendar loading performance"
+      ]
+    },
+    {
+      datetime: "2025-08-15 14:30 KST",
       version: "v6.5.2-beta",
       changes: [
         "✨ Visa Sources Library - Track official visa information sources",
@@ -22,7 +33,7 @@ export default function InfoPage() {
       ]
     },
     {
-      date: "2025-08-15",
+      datetime: "2025-08-15 11:00 KST",
       version: "v6.5.1-beta",
       changes: [
         "✨ Airport code recognition with 300+ airports",
@@ -32,7 +43,7 @@ export default function InfoPage() {
       ]
     },
     {
-      date: "2025-08-14",
+      datetime: "2025-08-14 16:00 KST",
       version: "v6.5.0-beta",
       changes: [
         "✨ Extended visa rules database with 30+ countries",
@@ -46,7 +57,7 @@ export default function InfoPage() {
       ]
     },
     {
-      date: "2025-08-13",
+      datetime: "2025-08-13 15:00 KST",
       version: "v6.4.5-beta",
       changes: [
         "🐛 Fixed future trip display showing as 'Currently staying'",
@@ -56,7 +67,7 @@ export default function InfoPage() {
       ]
     },
     {
-      date: "2025-08-12",
+      datetime: "2025-08-12 14:00 KST",
       version: "v6.4.0-beta", 
       changes: [
         "✨ Profile management with 5 tabs",
@@ -67,7 +78,7 @@ export default function InfoPage() {
       ]
     },
     {
-      date: "2025-08-10",
+      datetime: "2025-08-10 12:00 KST",
       version: "v6.3.0-beta",
       changes: [
         "✨ Initial Supabase integration",
@@ -78,7 +89,7 @@ export default function InfoPage() {
       ]
     },
     {
-      date: "2025-08-01",
+      datetime: "2025-08-01 10:00 KST",
       version: "v6.0.0-alpha",
       changes: [
         "🎉 Complete rewrite from scratch (6th iteration)",
@@ -101,10 +112,6 @@ export default function InfoPage() {
             <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
               v{version}
             </span>
-            <div className="text-sm text-gray-500">
-              <div>DINO verified: {formatDateForDisplay(APP_CONFIG.dataVerification.lastChecked)}</div>
-              <div>Sources updated: {lastUpdated}</div>
-            </div>
           </div>
         </div>
 
@@ -141,7 +148,7 @@ export default function InfoPage() {
             {recentUpdates.map((update, index) => (
               <div key={index} className="border-l-2 border-blue-500 pl-4">
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-medium text-gray-900">{update.date}</span>
+                  <span className="text-sm font-medium text-gray-900">{update.datetime}</span>
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                     {update.version}
                   </span>

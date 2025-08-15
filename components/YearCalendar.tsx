@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSupabaseStore } from '@/lib/supabase-store'
 import { countries } from '@/lib/countries'
+import { isMobileDevice } from '@/lib/calendar-utils'
 import {
   format,
   startOfMonth,
@@ -32,11 +33,19 @@ interface YearCalendarProps {
 export default function YearCalendar({ currentDate, onDateChange, selectedCountries }: YearCalendarProps) {
   const { stays, loadStays } = useSupabaseStore()
   const [showKoreaWindow, setShowKoreaWindow] = useState(false)
-  
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     loadStays()
   }, [loadStays])
+
+  // Check for mobile device on mount and resize
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(isMobileDevice())
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Check if there are any Korea stays with 183/365 visa
   const hasKoreaSpecialVisa = stays.some(s => s.countryCode === 'KR' && s.visaType === '183/365')
@@ -104,11 +113,18 @@ export default function YearCalendar({ currentDate, onDateChange, selectedCountr
       day = addDays(day, 1)
     }
 
+    // Responsive sizing based on mobile state
+    const cellSize = isMobile ? 'w-10 h-10' : 'w-8 h-8'
+    const circleSize = isMobile ? 'w-8 h-8' : 'w-6 h-6'
+    const textSize = isMobile ? 'text-sm' : 'text-xs'
+    const headerSize = isMobile ? 'text-sm' : 'text-xs'
+    const paddingSize = isMobile ? 'p-3' : 'p-2'
+
     return (
-      <div key={format(monthDate, 'yyyy-MM')} className="bg-white rounded-lg shadow-sm border border-gray-100 p-2">
+      <div key={format(monthDate, 'yyyy-MM')} className={`bg-white rounded-lg shadow-sm border border-gray-100 ${paddingSize}`}>
         {/* Month Header */}
         <div className="text-center mb-2">
-          <h3 className="text-xs font-semibold text-gray-900">
+          <h3 className={`${headerSize} font-semibold text-gray-900`}>
             {format(monthDate, 'MMM yyyy')}
           </h3>
         </div>
@@ -116,7 +132,7 @@ export default function YearCalendar({ currentDate, onDateChange, selectedCountr
         {/* Week Days Header */}
         <div className="grid grid-cols-7 gap-0.5 mb-1">
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, idx) => (
-            <div key={idx} className="text-center text-xs text-gray-500 py-0.5">
+            <div key={idx} className={`text-center ${textSize} text-gray-500 py-0.5`}>
               {day}
             </div>
           ))}
@@ -131,20 +147,18 @@ export default function YearCalendar({ currentDate, onDateChange, selectedCountr
             const isFuture = day > new Date()
             const hasStay = dayStays.length > 0
             const inRollingWindow = isInRollingWindow(day)
-            const isWindowStart = isSameDay(day, windowStart)
-            const isWindowEnd = isSameDay(day, windowEnd)
             const hasKoreaStay = dayStays.some(s => s.countryCode === 'KR' && s.visaType === '183/365')
             
             // Don't render days from other months
             if (!isCurrentMonth) {
-              return <div key={idx} className="w-8 h-8"></div>
+              return <div key={idx} className={cellSize}></div>
             }
-            
+
             return (
               <div
                 key={idx}
                 className={`
-                  w-8 h-8 flex items-center justify-center text-xs transition-colors cursor-pointer relative
+                  ${cellSize} flex items-center justify-center ${textSize} transition-colors cursor-pointer relative
                   text-gray-700
                   ${showKoreaWindow && hasKoreaSpecialVisa && inRollingWindow ? 'bg-yellow-100' : ''}
                   hover:bg-gray-100
@@ -158,13 +172,13 @@ export default function YearCalendar({ currentDate, onDateChange, selectedCountr
                 }
               >
                 {hasStay && !isToday ? (
-                  // Green for future stays, gray for past stays
-                  <div className={`w-6 h-6 ${isFuture ? 'bg-teal-500' : 'bg-slate-500'} rounded-full flex items-center justify-center text-white text-xs font-semibold`}>
+                  // Use consistent color for all travel days
+                  <div className={`${circleSize} bg-slate-500 rounded-full flex items-center justify-center text-white ${textSize} font-semibold shadow-sm`}>
                     {format(day, 'd')}
                   </div>
                 ) : isToday ? (
-                  // Blue circle for today
-                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-semibold shadow-sm">
+                  // Orange circle for today
+                  <div className={`${circleSize} bg-orange-500 rounded-full flex items-center justify-center text-white ${textSize} font-semibold shadow-sm`}>
                     {format(day, 'd')}
                   </div>
                 ) : (

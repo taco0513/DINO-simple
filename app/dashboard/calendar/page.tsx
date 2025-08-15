@@ -53,12 +53,8 @@ export default function CalendarPage() {
             <span className="text-sm text-gray-700">Today</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 bg-slate-500 rounded"></div>
-            <span className="text-sm text-gray-700">Past Stays</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 bg-teal-500 rounded"></div>
-            <span className="text-sm text-gray-700">Future Stays</span>
+            <div className="w-5 h-5 bg-slate-500 rounded-full shadow-sm"></div>
+            <span className="text-sm text-gray-700">Travel days</span>
           </div>
           {hasKoreaSpecialVisa && (
             <div className="flex items-center space-x-2">

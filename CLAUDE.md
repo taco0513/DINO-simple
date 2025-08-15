@@ -105,28 +105,46 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 
 ## Known Issues & Solutions
 
-### Latest Updates (2025.08.15) - Version 1.4.1
-1. **Airport Code Recognition**: Automatic city name detection from IATA codes
+### Latest Updates (2025.08.15) - Version 6.5.3-beta
+1. **Calendar Improvements**: Enhanced calendar visualization with mobile responsiveness
+   - Mobile-responsive sizing with larger touch targets for mobile devices
+   - Optimized grid layouts and improved hover states
+   - Clean, minimal design with consistent travel day indicators
+   - Korea 365-day window support for special visa tracking
+   - Simple slate-colored circles for all travel days
+   - Responsive legend with clear visual indicators
+
+2. **Airport Code Recognition**: Automatic city name detection from IATA codes
    - Database of 300+ major international airports
    - Auto-populate city names when entering airport codes (e.g., ICN → Seoul)
    - Auto-select country when airport code is recognized
    - Visual indicator showing recognized airport information
    - Support for both "From" and "To" city fields
    - Uppercase conversion for consistent code entry
-2. **Complete Countries Database**: All 195 countries with visa information
+
+3. **Complete Countries Database**: All 195 countries with visa information
    - Added comprehensive visa data for US passport holders
    - Includes visa types: visa-free, e-visa, visa on arrival, ETA
    - Official source links and last updated dates
    - TypeScript types enhanced for visa information
-3. **Smart Visa Card Filtering**: Only show relevant visa cards
+
+4. **Smart Visa Card Filtering**: Only show relevant visa cards
    - Hide cards for countries not visited in >1 year
    - Reset-type visas hidden after 7 days since exit
    - Rolling window visas always shown if within period
    - Dashboard performance improved with smart filtering
-4. **Travel Map Development**: Temporarily disabled for stability
-   - Map code preserved in `_map-development` folder
-   - Will be re-enabled after further development
-   - Fixed TypeScript errors in map components
+
+5. **Visa Sources Library**: Comprehensive visa information management
+   - 40+ countries with official government sources
+   - Source verification status tracking
+   - Last updated dates for both sources and DINO verification
+   - Terminology: "Source updated" vs "DINO verified" for clarity
+
+6. **UI/UX Improvements**:
+   - Increased Add Stay Modal width (max-w-2xl) for better usability
+   - Recent Updates section shows datetime with timezone (KST format)
+   - Visa card filtering explanation for user transparency
+   - Consistent version numbering (6.x.x-beta format)
 
 ### Previously Fixed Issues
 1. **Profile Save Error**: Run `supabase/migrations/update_profiles_safe.sql` to add missing columns
@@ -220,15 +238,20 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 - `lib/visa-calculator.ts`: Core visa calculation logic
 - `lib/supabase-store.ts`: State management and Supabase sync
 - `lib/visa-rules.ts`: Visa rules configuration with source links
+- `lib/visa-sources.ts`: Comprehensive visa sources library (40+ countries)
 - `lib/airport-codes.ts`: IATA airport codes database and recognition
 - `lib/countries-with-visa.ts`: Complete 195 countries with visa information
+- `lib/calendar-utils.ts`: Calendar utilities for mobile detection and countries
 - `lib/types.ts`: Enhanced TypeScript types for visa data
 - `app/dashboard/page.tsx`: Main dashboard with smart visa card filtering
+- `app/dashboard/calendar/page.tsx`: Calendar visualization with mobile responsiveness
 - `components/VisaCard.tsx`: Visual representation of visa status
+- `components/YearCalendar.tsx`: Mobile-responsive calendar with travel indicators
 - `components/AddStayModal.tsx`: Travel entry with airport code recognition
 - `components/EditStayModal.tsx`: Travel editing with airport code recognition
 - `components/FeedbackModal.tsx`: Beta feedback system with screenshot support
 - `app/api/feedback/route.ts`: Server-side feedback processing and email delivery
+- `app/dashboard/sources/page.tsx`: Visa sources library management interface
 - `lib/security.ts`: Security utilities (input validation, sanitization)
 - `lib/rate-limiter.ts`: API rate limiting implementation
 - `supabase/migrations/`: Database security policies and table structures
