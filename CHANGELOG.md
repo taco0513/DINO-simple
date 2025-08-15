@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Uppercase conversion for consistent code entry
   - Travel History list now displays city names alongside airport codes
 
+### Changed
+- Updated date display format to "Last we checked" for better user experience
+- Visa information modal now shows friendly date format (e.g., "November 2024")
+
 ### Fixed
 - Pagination duplication issue where page 4 appeared twice in StaysList
 

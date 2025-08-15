@@ -78,7 +78,7 @@ export default function InfoPage() {
               {version}
             </span>
             <span className="text-sm text-gray-500">
-              Last updated: {lastUpdated}
+              Last we checked: {lastUpdated}
             </span>
           </div>
         </div>

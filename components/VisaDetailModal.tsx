@@ -17,6 +17,29 @@ export default function VisaDetailModal({ country, onClose, passportNationality 
   const visaRules = passportNationality === 'KR' ? visaRulesForKoreanPassport : visaRulesForUSPassport
   const rule = visaRules[country.code] as ExtendedVisaRule | undefined
   
+  // Helper function to format the last checked date
+  const formatLastCheckedDate = (dateStr: string): string => {
+    // Handle different date formats
+    if (dateStr.includes('-')) {
+      // Format: YYYY-MM or YYYY-MM-DD
+      const parts = dateStr.split('-')
+      if (parts.length === 2) {
+        // YYYY-MM format
+        const [year, month] = parts
+        const date = new Date(parseInt(year), parseInt(month) - 1, 1)
+        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+      } else if (parts.length === 3) {
+        // YYYY-MM-DD format
+        return new Date(dateStr).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })
+      }
+    }
+    return dateStr // Return as-is if format is not recognized
+  }
+  
   if (!rule) {
     return null
   }
@@ -155,7 +178,9 @@ export default function VisaDetailModal({ country, onClose, passportNationality 
               
               {/* Source and Update Info */}
               <div className="text-xs text-gray-500 pt-2 border-t">
-                {rule.lastUpdated && <p>Last updated: {rule.lastUpdated}</p>}
+                {rule.lastUpdated && (
+                  <p>Last we checked: {formatLastCheckedDate(rule.lastUpdated)}</p>
+                )}
                 {rule.sourceUrl && (
                   <a
                     href={rule.sourceUrl}
