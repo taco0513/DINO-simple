@@ -1,173 +1,156 @@
 # Changelog
 
-All notable changes to the DINO project will be documented in this file.
+All notable changes to DINO (Digital Nomad Visa Tracker) will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-08-15
+
+### Added
+- **Complete Countries Database**: All 195 countries with comprehensive visa information
+  - Visa requirements for US passport holders
+  - Visa types: visa-free, e-visa, visa on arrival, ETA
+  - Maximum stay durations and visa rules (rolling window vs reset)
+  - Official source links and last updated dates
+  - Enhanced TypeScript types for visa data
+
+### Changed
+- **Smart Visa Card Filtering**: Dashboard now only shows relevant visa cards
+  - Hide cards for countries not visited in >1 year
+  - Reset-type visas hidden after 7 days since exit
+  - Rolling window visas always shown if within period
+  - Current stays always visible
+- **Enhanced Country Interface**: Added comprehensive visa information fields
+  - `ruleType`: 'rolling' | 'reset' | 'annual'
+  - `requiresVisa`, `eVisa`, `visaOnArrival`, `eta` flags
+  - `resetInfo`, `sourceUrl`, `lastUpdated` metadata
+
+### Fixed
+- TypeScript type errors in map components
+- Build errors related to visa rule types
+- ID duplication issue in supabase-store
+
+### Development
+- Travel Map temporarily disabled for production stability
+  - Code preserved in `app/dashboard/_map-development/`
+  - Will be re-enabled after further development
+
 ## [1.3.1] - 2025-08-14
 
+### Added
+- **Beta Feedback System**: Comprehensive user feedback collection
+  - Screenshot upload support (up to 5MB)
+  - 4 feedback types: General, Bug, Feature, UI/UX
+  - Email delivery via Resend API
+  - Real-time character counter
+  - Drag & drop for screenshots
+
 ### Fixed
-- **🔐 Profile Saving**: Complete fix for passport information storage
-  - Added Row Level Security (RLS) policies for profiles table (INSERT, UPDATE, DELETE)
-  - Fixed audit_logs table RLS blocking profile updates
+- **Profile Saving Issues**: Complete fix for passport information storage
+  - Added proper RLS policies for profiles table
+  - Disabled RLS on audit_logs table to prevent blocking
   - Added fallback logic for missing database columns
-  - Improved error messages for database issues
-  - Created migrations 003-006 for database schema updates
-
-- **🎨 UI/UX Improvements**: Enhanced user experience
-  - Removed emergency contact tab (simplified profile interface)
-  - Moved travel insurance fields to Preferences tab
+- **Feedback Email Delivery**: Changed to zbrianjin@gmail.com (Resend limitation)
+- **UI/UX Improvements**:
+  - Removed emergency contact tab
   - Fixed countries list alphabetical ordering
-  - Added drag & drop support for feedback screenshot uploads
   - Fixed Next.js static chunk 404 errors
-
-### Changed
-- **📧 Feedback Email**: Updated recipient due to Resend limitations
-  - Changed from hello@zimojin.com to zbrianjin@gmail.com
-  - Added clear documentation about Resend free tier restrictions
-
-### Added
-- **📚 Database Migrations**: New migration files for production
-  - `003_add_profile_columns.sql` - Adds preferences and insurance fields
-  - `004_fix_profiles_rls.sql` - Fixes RLS policies for profiles
-  - `005_fix_profiles_complete.sql` - Comprehensive RLS fix
-  - `006_fix_audit_logs_rls.sql` - Fixes audit logs table issues
-
-## [1.3.0] - 2025-08-14 🚀 BETA LAUNCH
-
-### Added
-- **🎯 Beta Feedback System**: Comprehensive feedback collection for beta users
-  - Screenshot upload support (PNG, JPG up to 5MB)
-  - Four feedback categories: General, Bug, Feature, UI/UX  
-  - Real-time character validation (minimum 10 characters)
-  - Email delivery to zbrianjin@gmail.com via Resend API (free tier limitation)
-  - Supabase storage integration for screenshot management
-  - Accessible via dashboard hamburger menu → "Send Feedback"
-  - Note: Using Resend account owner email due to free tier restrictions
-
-- **🛡️ Production Security Suite**: Enterprise-level security implementation
-  - Row Level Security (RLS) policies on all database tables
-  - API rate limiting (10 requests per minute per user)
-  - Input validation and sanitization utilities
-  - SQL injection prevention mechanisms
-  - CORS and security headers configuration
-  - Comprehensive audit logging for all data modifications
-  - Zero security vulnerabilities (verified with npm audit)
-
-- **📊 Source Attribution**: Liability protection for visa information
-  - Official government source links for all visa rules
-  - Last updated timestamps for information freshness
-  - Clear disclaimers about information accuracy
-  - External link indicators for transparency
-
-### Improved  
-- **⚡ Performance Optimizations**: Enhanced user experience
-  - Removed debug console logs from visa calculator
-  - Optimized build output to 140KB First Load JS
-  - Clean development console experience
-  - Faster page load times and smoother interactions
-
-- **📱 Travel History UX**: Better pagination and usability
-  - Reduced items per page from 10 to 5 for mobile optimization
-  - Improved pagination controls
-  - Better visual hierarchy
+- **Future Trip Display**: Fixed incorrect "Currently staying" status
+- **Current Stay Statistics**: Fixed stats for trips with future exit dates
+- **Travel History Duration**: Added proper duration display
 
 ### Security
-- **🔒 Environment Variable Security**: Complete isolation of sensitive data
-  - All .env files properly gitignored
-  - Production environment variables secured
-  - Vercel deployment variables configured
-  - No sensitive data exposure in codebase
+- Row Level Security (RLS) policies on all tables
+- API rate limiting (10 requests per minute)
+- Input validation and sanitization
+- SQL injection prevention
+- CORS and security headers configuration
+- Comprehensive audit logging
 
-- **🗃️ Database Security Enhancement**: Comprehensive data protection
-  - Feedback table with proper constraints and validation
-  - Rate limiting table for API protection
-  - Audit logs table for security monitoring
-  - Storage bucket policies for file upload security
-
-### Technical
-- **📋 Migration Files**: Complete database setup scripts
-  - Security policies migration (20250115_security_policies.sql)
-  - Feedback table creation with validation constraints
-  - Storage bucket creation with proper permissions
-  - Audit trigger implementation for data tracking
-
-### Deployment
-- **☁️ Vercel Production Ready**: Full deployment configuration
-  - All environment variables configured
-  - Build optimization for production
-  - Automatic deployment pipeline via Git
-  - dinoapp.net domain ready for beta users
-
-## [1.2.0] - 2025-08-14
+## [1.3.0] - 2025-08-13
 
 ### Added
-- **User Profile Management**: Complete profile system with avatar display
-- **Travel Duration Display**: Shows exact duration for each trip in Travel History
-  - Past trips: "X days"
-  - Current trips: "Day X (ongoing)"
-  - Future trips: "X days planned" or "Duration TBD"
-- **Professional User Menu**: Dropdown menu with avatar and navigation options
-- **Sidebar User Profile**: Integrated user information in sidebar above navigation
-- **Modern Calendar Colors**: Updated legend colors for better visual distinction
-  - Today: Bright Orange (#FF7A00)
-  - Past Stays: Cool Slate (#7B8FA1)
-  - Future Stays: Teal Green (#1ABC9C)
-
-### Fixed
-- **Future Trip Display Bug**: Future trips no longer incorrectly show as "Currently staying"
-  - Added proper date normalization with `setHours(0,0,0,0)`
-  - Separated logic for future trips vs current stays
-- **Current Stay Statistics**: Fixed stats not showing for trips with exit dates in the future
-  - Updated logic to check if today falls within entry-exit date range
-  - Now correctly identifies ongoing trips even with future exit dates
-- **Travel History Badges**: Properly displays status badges for all trip types
-  - "Currently staying" for ongoing trips
-  - "Future trip" for upcoming travel
-- **Vercel Deployment Issues**: Resolved build cache and module resolution errors
-  - Added baseUrl to tsconfig.json
-  - Moved build dependencies to production dependencies
+- **Korea Special Visa**: K-183/365 special residence visa support
+- **Searchable Country Select**: Type-to-search country dropdown
+- **Stay Management**: Edit and delete functionality for stays
+- **Mobile Optimizations**: Icon-only tabs on mobile screens
 
 ### Changed
-- **UI/UX Improvements**: 
-  - Moved user welcome message and sign out from header to sidebar
-  - Cleaner dashboard header layout
-  - Better visual hierarchy with modern color scheme
-- **Date Calculation Logic**: Enhanced accuracy for all date-based features
-  - Consistent time normalization across components
-  - Proper handling of timezone boundaries
-
-### Technical
-- **Documentation**: 
-  - Added comprehensive date calculation algorithm documentation
-  - Created edge cases and test scenarios documentation
-  - Updated CLAUDE.md with recent fixes and solutions
-- **Code Quality**:
-  - Improved type safety in date handling functions
-  - Better error handling for edge cases
-  - More maintainable component structure
-
-## [1.1.0] - 2025-08-13
-
-### Added
-- CSV import/export functionality
-- Year calendar view with 12-month display
-- Profile management with 5 tabs
-- Mobile-optimized UI with responsive design
-- Country filter for calendar view
+- **Vietnam Visa**: Updated from 45 to 90 days (E-visa)
+- **Thailand Visa**: Updated from 30 to 60 days (July 2024 change)
+- Countries list now sorted alphabetically
+- Improved dashboard loading with 5-second cache
 
 ### Fixed
-- Dashboard performance issues with caching
-- Mobile tab display with icon-only view
-- Korea 183/365 visa calculation accuracy
+- Dashboard slow loading issue
+- Mobile tab UI responsiveness
+- Korea visa calculation (365-day period, not 364)
 
-## [1.0.0] - 2025-08-12
+## [1.2.0] - 2025-08-12
+
+### Added
+- **Calendar View**: 12-month travel history visualization
+- **CSV Import/Export**: Bulk data management
+- **User Profiles**: Passport info, insurance, preferences
+- **Stats Cards**: Overview of travel statistics
+- **Disclaimer**: Visa information accuracy notice
+
+### Changed
+- Migrated from localStorage to Supabase
+- Improved UI with modern sidebar design
+- Enhanced mobile responsiveness
+
+## [1.1.0] - 2025-08-10
+
+### Added
+- **Supabase Integration**: Cloud storage and authentication
+- **User Authentication**: Secure login/signup
+- **Data Sync**: Cross-device data synchronization
+- **Profile Management**: User settings and preferences
+
+### Security
+- Implemented Row Level Security (RLS)
+- Added authentication requirements
+- Secured API endpoints
+
+## [1.0.0] - 2025-08-08
 
 ### Initial Release
-- Core visa tracking functionality
-- Supabase authentication integration
-- Dashboard with visa status cards
-- Travel history management
-- Overlap detection and resolution
-- Real-time visa calculation for multiple countries
+- Basic visa tracking for multiple countries
+- Automatic visa day calculation
+- Status indicators (safe/warning/danger)
+- Add/edit/delete stay records
+- Local storage with browser localStorage
+- Responsive design for mobile and desktop
+- Support for US passport visa rules
+
+## Upcoming Features
+
+### In Development
+- 🚧 **World Map Visualization**: Interactive travel map
+  - Country visit status
+  - Travel routes
+  - Visual statistics
+
+### Planned
+- [ ] Dark mode support
+- [ ] Visa expiry notifications
+- [ ] Advanced data export options
+- [ ] Travel statistics dashboard
+- [ ] Multi-passport support
+- [ ] Offline mode
+- [ ] Notification system
+- [ ] Timeline view
+- [ ] Advanced search functionality
+
+---
+
+## Version History
+
+- **1.4.0** - Complete countries database with smart filtering
+- **1.3.1** - Beta feedback system and security enhancements
+- **1.3.0** - Special visa support and UI improvements
+- **1.2.0** - Calendar view and CSV support
+- **1.1.0** - Cloud integration with Supabase
+- **1.0.0** - Initial release with core features

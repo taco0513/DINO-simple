@@ -105,6 +105,22 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 
 ## Known Issues & Solutions
 
+### Latest Updates (2025.08.15) - Version 1.4.0
+1. **Complete Countries Database**: All 195 countries with visa information
+   - Added comprehensive visa data for US passport holders
+   - Includes visa types: visa-free, e-visa, visa on arrival, ETA
+   - Official source links and last updated dates
+   - TypeScript types enhanced for visa information
+2. **Smart Visa Card Filtering**: Only show relevant visa cards
+   - Hide cards for countries not visited in >1 year
+   - Reset-type visas hidden after 7 days since exit
+   - Rolling window visas always shown if within period
+   - Dashboard performance improved with smart filtering
+3. **Travel Map Development**: Temporarily disabled for stability
+   - Map code preserved in `_map-development` folder
+   - Will be re-enabled after further development
+   - Fixed TypeScript errors in map components
+
 ### Previously Fixed Issues
 1. **Profile Save Error**: Run `supabase/migrations/update_profiles_safe.sql` to add missing columns
 2. **Korea Visa Calculation**: Must use 365-day period, not 364
@@ -161,9 +177,18 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 ## Testing Specific Features
 
 ```bash
+# Test visa card filtering
+# Add a stay from >1 year ago - card should not appear
+# Add a recent stay with exit >7 days ago (reset visa) - card should not appear  
+# Add current/recent stay - card should appear
+
 # Test visa calculations
 # Add a stay in Korea with type 'K-183/365' to test special residence
 # Add stays in Japan to test 90/180 rolling window
+
+# Test countries database
+# Search for any country (195 available)
+# Check visa information displays correctly
 
 # Test CSV import
 # Download template from CSV page
@@ -188,7 +213,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 - `lib/visa-calculator.ts`: Core visa calculation logic
 - `lib/supabase-store.ts`: State management and Supabase sync
 - `lib/visa-rules.ts`: Visa rules configuration with source links
-- `app/dashboard/page.tsx`: Main dashboard with visa cards
+- `lib/countries-with-visa.ts`: Complete 195 countries with visa information
+- `lib/types.ts`: Enhanced TypeScript types for visa data
+- `app/dashboard/page.tsx`: Main dashboard with smart visa card filtering
 - `components/VisaCard.tsx`: Visual representation of visa status
 - `components/FeedbackModal.tsx`: Beta feedback system with screenshot support
 - `app/api/feedback/route.ts`: Server-side feedback processing and email delivery
