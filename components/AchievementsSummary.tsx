@@ -4,14 +4,111 @@ import Link from 'next/link'
 import { useSupabaseStore } from '@/lib/supabase-store'
 import { getAchievementProgress, getNextMilestones } from '@/lib/achievements'
 
-export default function AchievementsSummary() {
+interface AchievementsSummaryProps {
+  compact?: boolean
+}
+
+export default function AchievementsSummary({ compact = false }: AchievementsSummaryProps) {
   const { stays } = useSupabaseStore()
   const { earned, totalPoints, level } = getAchievementProgress(stays)
-  const nextMilestones = getNextMilestones(stays, 2)
+  const nextMilestones = getNextMilestones(stays, compact ? 1 : 2)
   
-  // Get recent achievements (last 3 earned)
-  const recentAchievements = earned.slice(-3).reverse()
+  // Get recent achievements
+  const recentAchievements = earned.slice(compact ? -2 : -3).reverse()
   
+  if (compact) {
+    // Compact sidebar version
+    return (
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <p className="text-sm font-semibold text-gray-900">{level}</p>
+            <p className="text-xs text-gray-500">{totalPoints} points</p>
+          </div>
+          <Link
+            href="/dashboard/achievements"
+            className="text-xs text-blue-600 hover:text-blue-800"
+          >
+            View All →
+          </Link>
+        </div>
+        
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="text-center bg-gray-50 rounded p-2">
+            <p className="text-sm font-bold text-purple-600">{earned.length}</p>
+            <p className="text-xs text-gray-500">Earned</p>
+          </div>
+          <div className="text-center bg-gray-50 rounded p-2">
+            <p className="text-sm font-bold text-blue-600">
+              {earned.filter(a => a.rarity === 'legendary').length}
+            </p>
+            <p className="text-xs text-gray-500">Legend</p>
+          </div>
+          <div className="text-center bg-gray-50 rounded p-2">
+            <p className="text-sm font-bold text-green-600">
+              {Math.round((earned.length / 20) * 100)}%
+            </p>
+            <p className="text-xs text-gray-500">Done</p>
+          </div>
+        </div>
+        
+        {/* Recent Achievements */}
+        {recentAchievements.length > 0 && (
+          <div className="space-y-2 mb-3">
+            <p className="text-xs text-gray-500 uppercase">Recent</p>
+            {recentAchievements.map(achievement => (
+              <div
+                key={achievement.id}
+                className="flex items-center gap-2 bg-gray-50 px-2 py-1.5 rounded"
+              >
+                <span className="text-base">{achievement.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">{achievement.title}</p>
+                  <p className="text-xs text-gray-500">+{achievement.points} pts</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {/* Next Milestone */}
+        {nextMilestones.length > 0 && (
+          <div>
+            <p className="text-xs text-gray-500 uppercase mb-2">Next Up</p>
+            {nextMilestones.map(achievement => {
+              const progress = achievement.progress ? achievement.progress(stays) : null
+              const progressPercent = progress 
+                ? Math.round((progress.current / progress.target) * 100)
+                : 0
+              
+              return (
+                <div key={achievement.id} className="bg-blue-50 rounded p-2">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span>{achievement.icon}</span>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium">{achievement.title}</p>
+                    </div>
+                    <span className="text-xs text-blue-600 font-medium">
+                      {progressPercent}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-blue-200 rounded-full h-1">
+                    <div 
+                      className="bg-blue-500 h-1 rounded-full transition-all"
+                      style={{ width: `${progressPercent}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+    )
+  }
+  
+  // Full version (original)
   return (
     <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-4 md:p-6 border border-purple-200">
       <div className="flex items-center justify-between mb-4">

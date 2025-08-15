@@ -31,6 +31,7 @@ The app follows Next.js 15 App Router pattern with server/client components sepa
 - **Authentication Flow**: Supabase Auth → AuthProvider → Protected Routes
 - **Data Flow**: Supabase DB → supabase-store (Zustand) → React Components
 - **State Management**: Zustand store (`lib/supabase-store.ts`) handles all data operations with Supabase sync
+- **Responsive Design**: Mobile-first approach with IA hierarchy-based breakpoints (md, lg, xl)
 
 ### Critical Business Logic
 
@@ -55,6 +56,7 @@ Two main tables with Row Level Security (RLS):
    - Special visa types: 'K-183/365' for Korea special residence
 
 2. **profiles**: User passport and preferences
+   - Nickname/display name
    - Emergency contacts, insurance info
    - Notification preferences
    - Passport nationality and expiry dates
@@ -73,10 +75,23 @@ Two main tables with Row Level Security (RLS):
    - 5-second cache to prevent excessive API calls
    - Removed duplicate detection from loadStays for performance
 
-4. **Mobile UI**
+4. **Responsive Layout System** (Updated 2025.08.15)
+   - **Mobile-first design**: Single column layouts with full-width primary content
+   - **Tablet optimization**: Two-column layouts (`md:grid-cols-2`) for better space usage
+   - **Desktop layouts**: Multi-column grids with sidebar patterns (`lg:grid-cols-3`, `xl:grid-cols-4`)
+   - **IA Hierarchy**: Primary content gets priority on smaller screens, secondary content stacks below
+   - **Consistent breakpoints**: `md` (tablet), `lg`/`xl` (desktop) with `gap-4 md:gap-6` spacing
+   - **Page layouts**:
+     - Dashboard: `md:grid-cols-2 lg:grid-cols-3` (2/3 main + 1/3 sidebar)
+     - Calendar: `xl:grid-cols-4` (3/4 main + 1/4 sidebar) 
+     - Profile: `md:grid-cols-2 xl:grid-cols-3` (2/3 main + 1/3 sidebar)
+     - CSV: `md:grid-cols-2 xl:grid-cols-3` (2/3 main + 1/3 sidebar)
+     - Achievements: `md:grid-cols-2 xl:grid-cols-4` (3/4 main + 1/4 sidebar)
+
+5. **Mobile UI**
    - Icon-only tabs on mobile screens
-   - Responsive grid layouts
    - Touch-friendly interfaces
+   - Optimized component spacing
 
 ## Deployment Configuration
 
@@ -98,6 +113,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
    - `003_add_profile_columns.sql` - Adds preferences and insurance fields
    - `004_fix_profiles_rls.sql` - Fixes RLS policies for profiles
    - `005_fix_profiles_complete.sql` - Comprehensive RLS fix (run if 004 fails)
+   - `007_add_nickname_column.sql` - Adds nickname field to profiles table
    - `ALTER TABLE audit_logs DISABLE ROW LEVEL SECURITY;` - Fix audit logs blocking
 2. Enable RLS on all tables (migrations handle this)
 3. Update Auth URLs for production domain
@@ -105,7 +121,22 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 
 ## Known Issues & Solutions
 
-### Latest Updates (2025.08.15) - Version 6.5.3-beta
+### Latest Updates (2025.08.15) - Version 6.8.1-beta
+1. **Responsive Layout Optimization**: Complete IA hierarchy-based breakpoint optimization
+   - **Mobile-first approach**: Primary content prioritized on all screen sizes
+   - **Tablet layouts**: Optimized two-column layouts with `md:grid-cols-2` patterns
+   - **Desktop layouts**: Multi-column grids with intelligent sidebar placement
+   - **Consistent spacing**: Standardized `gap-4 md:gap-6` across all pages
+   - **Technical implementation**: 
+     - Dashboard: Primary content gets `md:col-span-2 lg:col-span-2`, secondary gets `md:col-span-2 lg:col-span-1`
+     - Calendar: Maintains existing `xl:grid-cols-4` with `xl:col-span-3/1` split
+     - Profile: Uses `md:col-span-2 xl:col-span-2/1` for forms/status split
+     - CSV: Operations get `md:col-span-2 xl:col-span-2`, help/overview gets `xl:col-span-1`
+     - Achievements: Cards get `md:col-span-2 xl:col-span-3`, actions get `xl:col-span-1`
+   - **Component updates**: AchievementsDisplay grids optimized for `sm:grid-cols-2 lg:grid-cols-3`
+   - **Benefits**: Improved tablet experience, better content hierarchy, consistent responsive behavior
+
+### Previous Updates (2025.08.15) - Version 6.8.0-beta
 1. **Dashboard Statistics Enhancement**: Improved stats cards with better prioritization
    - Added "Cities Visited" stat showing unique cities from travel records
    - Reordered stats for better user experience: Current Stay → 2025 Travel → Countries → Cities
@@ -146,7 +177,27 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
    - Last updated dates for both sources and DINO verification
    - Terminology: "Source updated" vs "DINO verified" for clarity
 
-6. **UI/UX Improvements**:
+6. **Achievement System**: Comprehensive gamification for travel milestones
+   - 20+ achievements across 5 categories (countries, cities, days, milestones, special)
+   - 4 rarity tiers (common, rare, epic, legendary) with distinct visual styles
+   - Points-based progression system (10-250 points per achievement)
+   - 7 user levels from Beginner to Master Nomad
+   - Real-time progress tracking with contextual messages
+   - Smart hints and tips for earning achievements
+   - Estimated completion times and difficulty indicators
+   - Beta-safe implementation without heavy dependencies
+
+7. **Dashboard Redesign**: Comprehensive modular grid layout
+   - 3-column responsive grid (2/3 main content + 1/3 sidebar)
+   - Compact components optimized for space utilization
+   - Main content: Stats, Active Visas (2-col grid), Travel History
+   - Sidebar: Achievements, Disclaimer, Quick Actions
+   - Reduced visual clutter with smaller fonts and tighter spacing
+   - Max width container (7xl) for better readability on large screens
+   - Smaller floating feedback button
+   - Quick Actions panel for easy navigation
+
+8. **UI/UX Improvements**:
    - Increased Add Stay Modal width (max-w-2xl) for better usability
    - Recent Updates section shows datetime with timezone (KST format)
    - Visa card filtering explanation for user transparency

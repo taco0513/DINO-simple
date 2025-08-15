@@ -8,6 +8,18 @@ export default function InfoPage() {
   
   const recentUpdates = [
     {
+      datetime: "2025-08-15 20:00 KST",
+      version: "v6.6.0-beta",
+      changes: [
+        "✨ Modular dashboard design with 3-column grid layout",
+        "🎨 Redesigned all pages with consistent 2/3 + 1/3 layout",
+        "📱 Responsive layout system across all dashboard pages",
+        "🎯 Compact headers with uppercase tracking for better hierarchy",
+        "💄 Improved information density and visual organization",
+        "🚀 Better sidebar utilization for contextual information"
+      ]
+    },
+    {
       datetime: "2025-08-15 17:00 KST",
       version: "v6.5.3-beta",
       changes: [
@@ -55,151 +67,212 @@ export default function InfoPage() {
         "💄 Removed duplicate information displays",
         "📝 Created comprehensive visa research documentation"
       ]
-    },
-    {
-      datetime: "2025-08-13 15:00 KST",
-      version: "v6.4.5-beta",
-      changes: [
-        "🐛 Fixed future trip display showing as 'Currently staying'",
-        "✨ Added duration display for all trips",
-        "🐛 Fixed current stay statistics calculation",
-        "🔧 Fixed Vercel deployment TypeScript baseUrl issue"
-      ]
-    },
-    {
-      datetime: "2025-08-12 14:00 KST",
-      version: "v6.4.0-beta", 
-      changes: [
-        "✨ Profile management with 5 tabs",
-        "✨ CSV import/export functionality",
-        "✨ Dashboard optimization with 5-second cache",
-        "🐛 Fixed Korea 183/365 visa calculation",
-        "💄 Mobile-responsive UI improvements"
-      ]
-    },
-    {
-      datetime: "2025-08-10 12:00 KST",
-      version: "v6.3.0-beta",
-      changes: [
-        "✨ Initial Supabase integration",
-        "✨ User authentication system",
-        "✨ Travel history management",
-        "✨ Basic visa calculation for major countries",
-        "💄 Dashboard UI design"
-      ]
-    },
-    {
-      datetime: "2025-08-01 10:00 KST",
-      version: "v6.0.0-alpha",
-      changes: [
-        "🎉 Complete rewrite from scratch (6th iteration)",
-        "⚡ Next.js 15 with App Router",
-        "💾 Supabase backend integration",
-        "🎨 New modern UI with Tailwind CSS",
-        "📱 Mobile-first responsive design"
-      ]
     }
+  ]
+
+  const features = [
+    {
+      title: "Visa Tracking",
+      description: "Track visa days across multiple countries with rolling window and reset calculations",
+      icon: "📊"
+    },
+    {
+      title: "Smart Filtering",
+      description: "Only shows relevant visa cards for countries you've recently visited",
+      icon: "🎯"
+    },
+    {
+      title: "Airport Recognition",
+      description: "Auto-populate cities from 300+ IATA airport codes",
+      icon: "✈️"
+    },
+    {
+      title: "CSV Import/Export",
+      description: "Backup and restore your travel data easily",
+      icon: "📁"
+    },
+    {
+      title: "Achievement System",
+      description: "Gamified travel milestones and rewards",
+      icon: "🏆"
+    },
+    {
+      title: "Calendar View",
+      description: "Visual representation of your travel history",
+      icon: "📅"
+    }
+  ]
+
+  const techStack = [
+    { name: "Next.js 15", description: "React framework with App Router" },
+    { name: "Supabase", description: "Authentication & database" },
+    { name: "TypeScript", description: "Type-safe development" },
+    { name: "Tailwind CSS", description: "Utility-first styling" },
+    { name: "Zustand", description: "State management" },
+    { name: "Vercel", description: "Deployment & hosting" }
   ]
 
   return (
     <ProtectedRoute>
-      <div className="p-4 md:p-8 max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">About DINO</h1>
-          <p className="text-gray-600">Digital Nomad Visa Tracker</p>
-          <div className="flex items-center gap-4 mt-4">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-              v{version}
-            </span>
-          </div>
+      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
+        {/* Compact Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">About DINO</h1>
+          <p className="text-sm text-gray-600 mt-1">Digital Nomad Visa Tracker - Version {version}</p>
         </div>
 
-        {/* Service Info */}
-        <section className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Service Information</h2>
-          <div className="space-y-3 text-sm">
-            <div className="flex items-start gap-2">
-              <span className="text-gray-500 min-w-24">Website:</span>
-              <a href="https://dinoapp.net" target="_blank" rel="noopener noreferrer" 
-                className="text-blue-600 hover:underline">
-                dinoapp.net
-              </a>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-gray-500 min-w-24">Status:</span>
-              <span className="text-green-600 font-medium">Active Beta</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-gray-500 min-w-24">Framework:</span>
-              <span>Next.js 15 + Supabase + TypeScript</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <span className="text-gray-500 min-w-24">Region:</span>
-              <span>Seoul, South Korea (ICN1)</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Recent Updates */}
-        <section className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Recent Updates</h2>
-          <div className="space-y-6">
-            {recentUpdates.map((update, index) => (
-              <div key={index} className="border-l-2 border-blue-500 pl-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-medium text-gray-900">{update.datetime}</span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                    {update.version}
-                  </span>
-                </div>
-                <ul className="space-y-1">
-                  {update.changes.map((change, changeIndex) => (
-                    <li key={changeIndex} className="text-sm text-gray-600">
-                      {change}
-                    </li>
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Content (2/3 width) */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Recent Updates */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Recent Updates</h2>
+              </div>
+              <div className="p-4">
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  {recentUpdates.map((update, index) => (
+                    <div key={index} className="border-l-2 border-blue-500 pl-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs text-gray-600">{update.datetime}</span>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                          {update.version}
+                        </span>
+                      </div>
+                      <ul className="space-y-0.5">
+                        {update.changes.map((change, changeIndex) => (
+                          <li key={changeIndex} className="text-xs text-gray-600">
+                            {change}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Features Grid */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Key Features</h2>
+              </div>
+              <div className="p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex gap-3">
+                      <span className="text-2xl">{feature.icon}</span>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-medium text-gray-900">{feature.title}</h3>
+                        <p className="text-xs text-gray-600 mt-0.5">{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Data Sources */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Visa Data Sources</h2>
+              </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-600 mb-3">Our visa information is compiled from official sources:</p>
+                <ul className="space-y-1 text-sm text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>Official government immigration websites</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>Embassy and consulate websites</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>IATA Travel Centre database</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-green-500 mt-0.5">✓</span>
+                    <span>Recent traveler reports (2023-2025)</span>
+                  </li>
                 </ul>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Data Sources */}
-        <section className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Visa Data Sources</h2>
-          <div className="text-sm text-gray-600 space-y-2">
-            <p>Our visa information is compiled from official sources including:</p>
-            <ul className="list-disc list-inside space-y-1 ml-2">
-              <li>Official government immigration websites</li>
-              <li>Embassy and consulate websites</li>
-              <li>IATA Travel Centre database</li>
-              <li>Recent traveler reports (2023-2024)</li>
-            </ul>
-            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-xs text-amber-800">
-                <strong>Important:</strong> Visa rules change frequently. Always verify with official sources before travel.
-              </p>
             </div>
           </div>
-        </section>
 
-        {/* Contact & Support */}
-        <section className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-lg font-semibold mb-4">Contact & Support</h2>
-          <div className="text-sm text-gray-600 space-y-3">
-            <p>DINO is currently in beta. We welcome your feedback and suggestions!</p>
-            <button 
-              onClick={() => window.location.href = 'mailto:hello@zimojin.com'}
-              className="inline-flex items-center gap-2 text-blue-600 hover:underline"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              hello@zimojin.com
-            </button>
+          {/* Sidebar (1/3 width) */}
+          <div className="space-y-6">
+            {/* Service Info */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Service Info</h2>
+              </div>
+              <div className="p-4 space-y-3">
+                <div>
+                  <p className="text-xs text-gray-500">Website</p>
+                  <a href="https://dinoapp.net" target="_blank" rel="noopener noreferrer" 
+                    className="text-sm text-blue-600 hover:underline">
+                    dinoapp.net
+                  </a>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Status</p>
+                  <p className="text-sm font-medium text-green-600">Active Beta</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Region</p>
+                  <p className="text-sm">Seoul, South Korea (ICN1)</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Version</p>
+                  <p className="text-sm font-medium">{version}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Tech Stack */}
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider">Tech Stack</h2>
+              </div>
+              <div className="p-4 space-y-2">
+                {techStack.map((tech, index) => (
+                  <div key={index}>
+                    <p className="text-sm font-medium text-gray-900">{tech.name}</p>
+                    <p className="text-xs text-gray-500">{tech.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Important Notice */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <h3 className="text-xs font-medium text-amber-900 mb-2">Important Notice</h3>
+              <p className="text-xs text-amber-700">
+                Visa rules change frequently. Always verify with official sources before travel. DINO is for reference only and not liable for any travel issues.
+              </p>
+            </div>
+
+            {/* Contact */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-xs font-medium text-blue-900 mb-2">Contact & Support</h3>
+              <p className="text-xs text-blue-700 mb-2">
+                DINO is in beta. We welcome your feedback!
+              </p>
+              <button 
+                onClick={() => window.location.href = 'mailto:hello@zimojin.com'}
+                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline"
+              >
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                hello@zimojin.com
+              </button>
+            </div>
           </div>
-        </section>
+        </div>
       </div>
     </ProtectedRoute>
   )

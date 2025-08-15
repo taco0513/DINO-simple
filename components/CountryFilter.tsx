@@ -7,17 +7,18 @@ import { countries } from '@/lib/countries'
 interface CountryFilterProps {
   selectedCountries: string[]
   onSelectionChange: (countries: string[]) => void
+  visibleCountries?: string[]
 }
 
-export default function CountryFilter({ selectedCountries, onSelectionChange }: CountryFilterProps) {
+export default function CountryFilter({ selectedCountries, onSelectionChange, visibleCountries }: CountryFilterProps) {
   const stays = useSupabaseStore((state) => state.stays)
-  const [visitedCountries, setVisitedCountries] = useState<string[]>([])
+  const [availableCountries, setAvailableCountries] = useState<string[]>([])
 
   useEffect(() => {
-    // Get unique countries from stays
-    const uniqueCountries = [...new Set(stays.map(s => s.countryCode))]
-    setVisitedCountries(uniqueCountries)
-  }, [stays])
+    // Use provided visibleCountries or fall back to all visited countries
+    const countriesToShow = visibleCountries || [...new Set(stays.map(s => s.countryCode))]
+    setAvailableCountries(countriesToShow)
+  }, [stays, visibleCountries])
 
   const handleCountryToggle = (countryCode: string) => {
     if (selectedCountries.includes(countryCode)) {
@@ -28,40 +29,51 @@ export default function CountryFilter({ selectedCountries, onSelectionChange }: 
   }
 
   const handleSelectAll = () => {
-    onSelectionChange(visitedCountries)
+    onSelectionChange(availableCountries)
   }
 
   const handleClearAll = () => {
     onSelectionChange([])
   }
 
-  if (visitedCountries.length === 0) {
+  if (availableCountries.length === 0) {
     return null
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-900">Filter by Country</h3>
-        <div className="flex space-x-2">
-          <button
-            onClick={handleSelectAll}
-            className="text-xs text-blue-600 hover:text-blue-700"
-          >
-            Select All
-          </button>
-          <span className="text-gray-300">|</span>
-          <button
-            onClick={handleClearAll}
-            className="text-xs text-gray-600 hover:text-gray-700"
-          >
-            Clear All
-          </button>
+    <div className="bg-white rounded-lg shadow-sm">
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-medium text-gray-900">
+            Filter by Country
+            {visibleCountries && <span className="text-xs text-gray-500 ml-1">(Current View)</span>}
+          </h2>
+          <div className="flex items-center space-x-2">
+            {selectedCountries.length > 0 && (
+              <span className="text-xs text-gray-500">
+                {selectedCountries.length} selected
+              </span>
+            )}
+            <button
+              onClick={handleSelectAll}
+              className="text-xs text-blue-600 hover:text-blue-700"
+            >
+              All
+            </button>
+            <span className="text-gray-300">|</span>
+            <button
+              onClick={handleClearAll}
+              className="text-xs text-gray-600 hover:text-gray-700"
+            >
+              Clear
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {visitedCountries.map(countryCode => {
+      <div className="p-4">
+        <div className="flex flex-wrap gap-2">
+          {availableCountries.map(countryCode => {
           const country = countries.find(c => c.code === countryCode)
           const isSelected = selectedCountries.includes(countryCode)
           
@@ -83,13 +95,8 @@ export default function CountryFilter({ selectedCountries, onSelectionChange }: 
             </button>
           )
         })}
-      </div>
-
-      {selectedCountries.length > 0 && (
-        <div className="mt-3 text-xs text-gray-600">
-          Showing {selectedCountries.length} of {visitedCountries.length} countries
         </div>
-      )}
+      </div>
     </div>
   )
 }
