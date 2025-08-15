@@ -14,6 +14,7 @@ import StatsCards from '@/components/StatsCards'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/components/AuthProvider'
 import FeedbackModal from '@/components/FeedbackModal'
+import AchievementsSummary from '@/components/AchievementsSummary'
 
 export default function DashboardPage() {
   const { stays, loadStays, migrateFromLocalStorage, loading, initialLoad } = useSupabaseStore()
@@ -249,6 +250,14 @@ export default function DashboardPage() {
           <section>
             <h2 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">Overview</h2>
             <StatsCards />
+          </section>
+          
+          {/* Divider */}
+          <div className="border-t border-gray-100"></div>
+          
+          {/* Achievements Section */}
+          <section>
+            <AchievementsSummary />
           </section>
           
           {/* Divider */}
