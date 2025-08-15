@@ -105,18 +105,25 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 
 ## Known Issues & Solutions
 
-### Latest Updates (2025.08.15) - Version 1.4.0
-1. **Complete Countries Database**: All 195 countries with visa information
+### Latest Updates (2025.08.15) - Version 1.4.1
+1. **Airport Code Recognition**: Automatic city name detection from IATA codes
+   - Database of 300+ major international airports
+   - Auto-populate city names when entering airport codes (e.g., ICN → Seoul)
+   - Auto-select country when airport code is recognized
+   - Visual indicator showing recognized airport information
+   - Support for both "From" and "To" city fields
+   - Uppercase conversion for consistent code entry
+2. **Complete Countries Database**: All 195 countries with visa information
    - Added comprehensive visa data for US passport holders
    - Includes visa types: visa-free, e-visa, visa on arrival, ETA
    - Official source links and last updated dates
    - TypeScript types enhanced for visa information
-2. **Smart Visa Card Filtering**: Only show relevant visa cards
+3. **Smart Visa Card Filtering**: Only show relevant visa cards
    - Hide cards for countries not visited in >1 year
    - Reset-type visas hidden after 7 days since exit
    - Rolling window visas always shown if within period
    - Dashboard performance improved with smart filtering
-3. **Travel Map Development**: Temporarily disabled for stability
+4. **Travel Map Development**: Temporarily disabled for stability
    - Map code preserved in `_map-development` folder
    - Will be re-enabled after further development
    - Fixed TypeScript errors in map components
@@ -213,10 +220,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=  # Required: Supabase anonymous key
 - `lib/visa-calculator.ts`: Core visa calculation logic
 - `lib/supabase-store.ts`: State management and Supabase sync
 - `lib/visa-rules.ts`: Visa rules configuration with source links
+- `lib/airport-codes.ts`: IATA airport codes database and recognition
 - `lib/countries-with-visa.ts`: Complete 195 countries with visa information
 - `lib/types.ts`: Enhanced TypeScript types for visa data
 - `app/dashboard/page.tsx`: Main dashboard with smart visa card filtering
 - `components/VisaCard.tsx`: Visual representation of visa status
+- `components/AddStayModal.tsx`: Travel entry with airport code recognition
+- `components/EditStayModal.tsx`: Travel editing with airport code recognition
 - `components/FeedbackModal.tsx`: Beta feedback system with screenshot support
 - `app/api/feedback/route.ts`: Server-side feedback processing and email delivery
 - `lib/security.ts`: Security utilities (input validation, sanitization)

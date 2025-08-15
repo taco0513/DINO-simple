@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSupabaseStore } from '@/lib/supabase-store'
 import CountrySelect from './CountrySelect'
+import { findAirportByCode, isLikelyAirportCode, getAirportDisplay } from '@/lib/airport-codes'
 
 interface AddStayModalProps {
   onClose: () => void
@@ -20,6 +21,44 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
     visaType: 'visa-free',
     notes: '',
   })
+  const [cityDisplay, setCityDisplay] = useState('')
+  const [fromCityDisplay, setFromCityDisplay] = useState('')
+
+  // Handle airport code recognition for "To" city
+  useEffect(() => {
+    if (isLikelyAirportCode(formData.city)) {
+      const airport = findAirportByCode(formData.city)
+      if (airport) {
+        setCityDisplay(getAirportDisplay(airport))
+        // Auto-select country if airport code is recognized
+        if (formData.countryCode === '') {
+          setFormData(prev => ({ ...prev, countryCode: airport.countryCode }))
+        }
+      } else {
+        setCityDisplay('')
+      }
+    } else {
+      setCityDisplay('')
+    }
+  }, [formData.city])
+
+  // Handle airport code recognition for "From" city
+  useEffect(() => {
+    if (isLikelyAirportCode(formData.fromCity)) {
+      const airport = findAirportByCode(formData.fromCity)
+      if (airport) {
+        setFromCityDisplay(getAirportDisplay(airport))
+        // Auto-select country if airport code is recognized
+        if (formData.fromCountryCode === '') {
+          setFormData(prev => ({ ...prev, fromCountryCode: airport.countryCode }))
+        }
+      } else {
+        setFromCityDisplay('')
+      }
+    } else {
+      setFromCityDisplay('')
+    }
+  }, [formData.fromCity])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -78,13 +117,20 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   City (or Airport Code)
                 </label>
-                <input
-                  type="text"
-                  value={formData.fromCity}
-                  onChange={(e) => setFormData({ ...formData, fromCity: e.target.value })}
-                  placeholder="e.g. Bangkok, BKK"
-                  className="w-full h-12 px-4 text-16px border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.fromCity}
+                    onChange={(e) => setFormData({ ...formData, fromCity: e.target.value.toUpperCase() })}
+                    placeholder="e.g. Bangkok, BKK"
+                    className="w-full h-12 px-4 text-16px border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  {fromCityDisplay && (
+                    <div className="absolute top-full left-0 right-0 mt-1 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
+                      ✈️ {fromCityDisplay}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -107,13 +153,20 @@ export default function AddStayModal({ onClose }: AddStayModalProps) {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   City (or Airport Code)
                 </label>
-                <input
-                  type="text"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  placeholder="e.g. Chiang Mai, CNX"
-                  className="w-full h-12 px-4 text-16px border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value.toUpperCase() })}
+                    placeholder="e.g. Chiang Mai, CNX"
+                    className="w-full h-12 px-4 text-16px border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  {cityDisplay && (
+                    <div className="absolute top-full left-0 right-0 mt-1 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
+                      ✈️ {cityDisplay}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
