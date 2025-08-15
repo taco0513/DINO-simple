@@ -10,6 +10,13 @@ export default function StatsCards() {
   // Number of countries visited
   const visitedCountries = [...new Set(stays.map(s => s.countryCode))].length
   
+  // Number of unique cities visited
+  const visitedCities = [...new Set(
+    stays
+      .map(s => s.city)
+      .filter(city => city && city.trim() !== '')
+  )].length
+  
   // Calculate days traveled this year (from Jan 1 to today)
   const currentYear = new Date().getFullYear()
   const yearStart = new Date(currentYear, 0, 1) // January 1st of current year
@@ -68,7 +75,7 @@ export default function StatsCards() {
     : 0
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
       {/* 방문 국가 수 */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
         <div className="flex items-center justify-between">
@@ -88,6 +95,17 @@ export default function StatsCards() {
             <p className="text-lg md:text-2xl font-bold">{thisYearDays} days</p>
           </div>
           <div className="text-xl md:text-3xl opacity-50">📅</div>
+        </div>
+      </div>
+      
+      {/* Cities visited */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 md:p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs md:text-sm text-gray-600">Cities Visited</p>
+            <p className="text-lg md:text-2xl font-bold">{visitedCities} cities</p>
+          </div>
+          <div className="text-xl md:text-3xl opacity-50">🏙️</div>
         </div>
       </div>
       
