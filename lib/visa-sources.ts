@@ -95,10 +95,11 @@ export const visaSourcesLibrary: VisaSourceLibrary = {
     {
       countryCode: 'PH',
       countryName: 'Philippines',
-      sourceUrl: 'https://consular.dfa.gov.ph/visa-general-info',
+      sourceUrl: 'https://immigration.gov.ph/',
       sourceType: 'official',
       sourceLastUpdated: '2024-11',
-      lastDINOCheck: '2025-08-14',
+      lastDINOCheck: '2025-08-15',
+      notes: '⚠️ Site may block direct links. Copy URL to browser if needed.',
       verificationStatus: 'verified'
     },
     {
@@ -246,11 +247,11 @@ export const visaSourcesLibrary: VisaSourceLibrary = {
     {
       countryCode: 'BR',
       countryName: 'Brazil',
-      sourceUrl: 'https://www.gov.br/mre/pt-br/consulado-atlanta/visa-2',
+      sourceUrl: 'https://www.gov.br/mre/en/subjects/consular-affairs/visa-for-traveling-to-brazil',
       sourceType: 'official',
       sourceLastUpdated: '2024-09',
-      lastDINOCheck: '2025-08-14',
-      notes: '90 days visa-free',
+      lastDINOCheck: '2025-08-15',
+      notes: '⚠️ 90 days visa-free. Site may block direct links.',
       verificationStatus: 'verified'
     },
     {
@@ -348,11 +349,11 @@ export const visaSourcesLibrary: VisaSourceLibrary = {
     {
       countryCode: 'ZA',
       countryName: 'South Africa',
-      sourceUrl: 'http://www.dha.gov.za/index.php/visa-information',
+      sourceUrl: 'https://www.dha.gov.za/',
       sourceType: 'official',
       sourceLastUpdated: '2024-10',
-      lastDINOCheck: '2025-08-14',
-      notes: '90 days visa-free',
+      lastDINOCheck: '2025-08-15',
+      notes: '⚠️ 90 days visa-free. Navigate to Immigration Services > Visas.',
       verificationStatus: 'verified'
     },
     {
