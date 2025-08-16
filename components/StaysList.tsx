@@ -7,6 +7,7 @@ import { countries } from '@/lib/countries'
 import EditStayModal from './EditStayModal'
 import { differenceInDays, parseISO } from 'date-fns'
 import { findAirportByCode, isLikelyAirportCode } from '@/lib/airport-codes'
+import { formatMemoryDate } from '@/lib/memory-utils'
 
 export default function StaysList() {
   const { stays, deleteStay } = useSupabaseStore()
@@ -128,11 +129,15 @@ export default function StaysList() {
               
               const isFutureTrip = entryDate > today
               const isCurrentlyStaying = entryDate <= today && (!exitDate || exitDate >= today)
+              const isMemory = stay.isMemory || false
               
               // Calculate duration
               let duration = 0
               let durationText = ''
-              if (isFutureTrip) {
+              if (isMemory) {
+                // Memory stay - show approximate duration
+                durationText = stay.approximateDuration ? `~${stay.approximateDuration} days` : ''
+              } else if (isFutureTrip) {
                 // Future trip - can't calculate duration yet
                 durationText = stay.exitDate ? `${differenceInDays(parseISO(stay.exitDate), parseISO(stay.entryDate)) + 1} days planned` : 'Duration TBD'
               } else if (isCurrentlyStaying) {
@@ -149,7 +154,11 @@ export default function StaysList() {
               }
               
               return (
-                <div key={stay.id} className="p-4 md:p-5 hover:bg-gray-50 transition-colors">
+                <div key={stay.id} className={`p-4 md:p-5 transition-colors ${
+                  isMemory 
+                    ? 'bg-purple-50 hover:bg-purple-100 border-l-4 border-purple-300' 
+                    : 'hover:bg-gray-50'
+                }`}>
                   {/* Mobile Layout (default) */}
                   <div className="md:hidden">
                     {/* Header with flag and status badge */}
@@ -166,13 +175,15 @@ export default function StaysList() {
                         </div>
                       </div>
                       {/* Status Badge */}
-                      {(isCurrentlyStaying || isFutureTrip) && (
+                      {(isCurrentlyStaying || isFutureTrip || isMemory) && (
                         <span className={`flex-shrink-0 text-xs px-2 py-1 rounded-full ${
-                          isCurrentlyStaying 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-blue-100 text-blue-700'
+                          isMemory
+                            ? 'bg-purple-100 text-purple-700'
+                            : isCurrentlyStaying 
+                              ? 'bg-green-100 text-green-700' 
+                              : 'bg-blue-100 text-blue-700'
                         }`}>
-                          {isCurrentlyStaying ? 'Current' : 'Future'}
+                          {isMemory ? '📸 Memory' : isCurrentlyStaying ? 'Current' : 'Future'}
                         </span>
                       )}
                     </div>
@@ -191,7 +202,11 @@ export default function StaysList() {
                       )}
                       <div className="text-gray-600">
                         <div className="font-medium">
-                          {stay.entryDate} ~ {stay.exitDate || 'Present'}
+                          {isMemory ? (
+                            <span className="italic">~{formatMemoryDate(stay)}</span>
+                          ) : (
+                            <span>{stay.entryDate} ~ {stay.exitDate || 'Present'}</span>
+                          )}
                         </div>
                         <div className="text-xs text-gray-500 mt-0.5">
                           {durationText}
@@ -226,12 +241,17 @@ export default function StaysList() {
                             {country?.name}
                             {stay.city && <span className="text-gray-600"> ({formatCityDisplay(stay.city)})</span>}
                           </p>
-                          {isCurrentlyStaying && (
+                          {isMemory && (
+                            <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
+                              📸 Memory
+                            </span>
+                          )}
+                          {!isMemory && isCurrentlyStaying && (
                             <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
                               Currently staying
                             </span>
                           )}
-                          {isFutureTrip && (
+                          {!isMemory && isFutureTrip && (
                             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                               Future trip
                             </span>
@@ -244,8 +264,17 @@ export default function StaysList() {
                           </p>
                         )}
                         <p className="text-sm text-gray-600 mt-1">
-                          {stay.entryDate} ~ {stay.exitDate || 'Present'}
-                          <span className="ml-2 text-xs text-gray-500">({durationText})</span>
+                          {isMemory ? (
+                            <>
+                              <span className="italic">~{formatMemoryDate(stay)}</span>
+                              <span className="ml-2 text-xs text-gray-500">({durationText})</span>
+                            </>
+                          ) : (
+                            <>
+                              {stay.entryDate} ~ {stay.exitDate || 'Present'}
+                              <span className="ml-2 text-xs text-gray-500">({durationText})</span>
+                            </>
+                          )}
                         </p>
                       </div>
                     </div>

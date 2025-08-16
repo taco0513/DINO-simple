@@ -8,7 +8,7 @@ import { useAuth } from '@/components/AuthProvider'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: '📊' },
   { name: 'Achievements', href: '/dashboard/achievements', icon: '🏆' },
-  // { name: 'Map', href: '/dashboard/map', icon: '🗺️' }, // Temporarily disabled - still in development
+  { name: 'Map', href: '/dashboard/map', icon: '🗺️' },
   { name: 'Calendar', href: '/dashboard/calendar', icon: '📅' },
   { name: 'Profile', href: '/dashboard/profile', icon: '👤' },
   { name: 'CSV File', href: '/dashboard/csv', icon: '📁' },

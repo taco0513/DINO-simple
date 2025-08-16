@@ -15,6 +15,7 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuth } from '@/components/AuthProvider'
 import FeedbackModal from '@/components/FeedbackModal'
 import AchievementsSummary from '@/components/AchievementsSummary'
+import CollapsibleSection from '@/components/CollapsibleSection'
 
 export default function DashboardPage() {
   const { stays, loadStays, migrateFromLocalStorage, loading, initialLoad } = useSupabaseStore()
@@ -289,13 +290,16 @@ export default function DashboardPage() {
               
               {/* Secondary Content - Achievements & Actions (Mobile: full width, Tablet: stacked below, Desktop: 1/3 sidebar) */}
               <div className="md:col-span-2 lg:col-span-1 space-y-4 lg:space-y-6">
-                {/* Achievements Summary - Compact */}
-                <div>
-                  <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Achievements</h2>
+                {/* Achievements Summary - Compact & Collapsible */}
+                <CollapsibleSection
+                  title="Achievements"
+                  storageKey="dashboard-achievements-collapsed"
+                  defaultCollapsed={false}
+                >
                   <div className="bg-white rounded-lg shadow-sm">
                     <AchievementsSummary compact={true} />
                   </div>
-                </div>
+                </CollapsibleSection>
                 
                 {/* Disclaimer - Compact */}
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">

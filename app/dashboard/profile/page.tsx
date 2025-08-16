@@ -6,6 +6,7 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import { supabase } from '@/lib/supabase'
 import { countries } from '@/lib/countries'
 import { useSupabaseStore } from '@/lib/supabase-store'
+import toast from 'react-hot-toast'
 
 interface Profile {
   nickname: string | null
@@ -157,7 +158,9 @@ export default function ProfilePage() {
 
       if (error) throw error
 
-      setMessage({ type: 'success', text: 'Profile saved successfully!' })
+      toast.success('Profile saved successfully!', {
+        icon: '✅',
+      })
       
       // Update local state to match what was saved
       if (dataToSave === safeData) {
@@ -177,7 +180,7 @@ export default function ProfilePage() {
         errorMessage = 'Database schema mismatch. Please run migrations 003 and 004 in Supabase.'
       }
       
-      setMessage({ type: 'error', text: errorMessage })
+      toast.error(errorMessage)
     } finally {
       setSaving(false)
     }
@@ -185,12 +188,12 @@ export default function ProfilePage() {
 
   const handlePasswordChange = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setMessage({ type: 'error', text: 'New passwords do not match' })
+      toast.error('New passwords do not match')
       return
     }
 
     if (passwordData.newPassword.length < 6) {
-      setMessage({ type: 'error', text: 'Password must be at least 6 characters' })
+      toast.error('Password must be at least 6 characters')
       return
     }
 
@@ -204,11 +207,13 @@ export default function ProfilePage() {
 
       if (error) throw error
 
-      setMessage({ type: 'success', text: 'Password changed successfully!' })
+      toast.success('Password changed successfully!', {
+        icon: '🔐',
+      })
       setPasswordData({ newPassword: '', confirmPassword: '' })
     } catch (error: any) {
       console.error('Error changing password:', error)
-      setMessage({ type: 'error', text: error.message || 'Failed to change password' })
+      toast.error(error.message || 'Failed to change password')
     } finally {
       setChangingPassword(false)
     }

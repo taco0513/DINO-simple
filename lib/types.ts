@@ -31,6 +31,14 @@ export interface Stay {
   notes?: string
   created_at?: string
   updated_at?: string
+  
+  // Memory Mode fields
+  isMemory?: boolean
+  dateAccuracy?: 'exact' | 'month' | 'quarter' | 'year' | 'decade'
+  yearVisited?: number        // e.g., 2019
+  monthVisited?: number       // 1-12
+  approximateDuration?: number // estimated days
+  tripHighlights?: string[]   // memorable moments
 }
 
 export interface VisaRule {

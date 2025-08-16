@@ -12,7 +12,10 @@ export function calculateVisaStatus(
   let daysUsed = 0
   let currentDays = 0  // Days from past and current stays
   let plannedDays = 0  // Days from future stays
-  const countryStays = stays.filter(s => s.countryCode === country.code)
+  // Filter stays for this country, excluding memory stays
+  const countryStays = stays
+    .filter(s => s.countryCode === country.code)
+    .filter(s => !s.isMemory) // Exclude memory stays from visa calculations
   
   // Check for special Korea 183/365 visa type
   const hasSpecialKoreaVisa = country.code === 'KR' && 
